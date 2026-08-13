@@ -1,0 +1,67 @@
+name: flowline-ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  crowd-api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/crowd-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install
+        run: |
+          python -m pip install -r requirements.txt httpx pytest
+      - name: Test
+        env:
+          PYTHONPATH: .
+        run: pytest tests -q
+
+  contracts-and-console:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install JS
+        run: npm install
+      - name: Install API deps for OpenAPI export
+        run: |
+          python -m pip install -r apps/crowd-api/requirements.txt
+      - name: Export + generate contracts
+        run: |
+          python scripts/export_openapi.py
+          npm --workspace packages/contracts run generate
+          python scripts/stamp_contracts.py
+          npm --workspace packages/contracts run check:stale
+      - name: Typecheck + build console
+        run: |
+          npm --workspace apps/ops-console run typecheck
+          npm --workspace apps/ops-console run build
+
+  integration:
+    runs-on: ubuntu-latest
+    needs: [crowd-api]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install + boot API
+        run: |
+          python -m pip install -r apps/crowd-api/requirements.txt
+          PYTHONPATH=apps/crowd-api python -m uvicorn app.main:app --host 127.0.0.1 --port 8001 &
+          sleep 5
+          curl -sf http://127.0.0.1:8001/health
+          curl -sf "http://127.0.0.1:8001/api/demo/tick?t=16" | python -c "import sys,json; d=json.load(sys.stdin); assert d['bottlenecks']"

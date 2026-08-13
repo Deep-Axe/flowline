@@ -1,0 +1,18 @@
+services:
+  crowd-api:
+    build:
+      context: .
+      dockerfile: apps/crowd-api/Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      PYTHONUNBUFFERED: "1"
+
+  ops-console:
+    build:
+      context: .
+      dockerfile: apps/ops-console/Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - crowd-api

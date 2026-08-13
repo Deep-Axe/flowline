@@ -1,0 +1,776 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FLOWLINE Crowd API",
+    "description": "Crowd density, bottleneck detection, and rerouting for venue operations. Inference via Hugging Face rootstrap-org/crowd-counting (CSRNet).",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/venue": {
+      "get": {
+        "tags": [
+          "ops"
+        ],
+        "summary": "Get Venue",
+        "operationId": "get_venue",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Venue"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/demo/timeline": {
+      "get": {
+        "tags": [
+          "ops"
+        ],
+        "summary": "Get Timeline",
+        "operationId": "get_timeline",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoTimeline"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/demo/tick": {
+      "get": {
+        "tags": [
+          "ops"
+        ],
+        "summary": "Get Demo Tick",
+        "operationId": "get_demo_tick",
+        "parameters": [
+          {
+            "name": "t",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "maximum": 120,
+              "minimum": 0,
+              "default": 0,
+              "title": "T"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Snapshot"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/demo/reset": {
+      "post": {
+        "tags": [
+          "ops"
+        ],
+        "summary": "Demo Reset",
+        "operationId": "demo_reset",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/model/status": {
+      "get": {
+        "tags": [
+          "ops"
+        ],
+        "summary": "Model Status",
+        "operationId": "model_status",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analyze": {
+      "post": {
+        "tags": [
+          "ops"
+        ],
+        "summary": "Analyze",
+        "operationId": "analyze",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_ops-analyze"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Snapshot"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Health",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Body_ops-analyze": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          },
+          "phase": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phase"
+          },
+          "reset": {
+            "type": "boolean",
+            "title": "Reset",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_ops-analyze"
+      },
+      "DemoTimeline": {
+        "properties": {
+          "duration_sec": {
+            "type": "number",
+            "title": "Duration Sec"
+          },
+          "frames": {
+            "items": {
+              "$ref": "#/components/schemas/TimelineFrame"
+            },
+            "type": "array",
+            "title": "Frames"
+          }
+        },
+        "type": "object",
+        "required": [
+          "duration_sec",
+          "frames"
+        ],
+        "title": "DemoTimeline"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "HealthResponse"
+      },
+      "ModelMeta": {
+        "properties": {
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "model_repo": {
+            "type": "string",
+            "title": "Model Repo"
+          },
+          "global_count": {
+            "type": "number",
+            "title": "Global Count"
+          },
+          "ready": {
+            "type": "boolean",
+            "title": "Ready"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source",
+          "model_repo",
+          "global_count",
+          "ready"
+        ],
+        "title": "ModelMeta"
+      },
+      "ModelStatus": {
+        "properties": {
+          "ready": {
+            "type": "boolean",
+            "title": "Ready"
+          },
+          "device": {
+            "type": "string",
+            "title": "Device"
+          },
+          "repo": {
+            "type": "string",
+            "title": "Repo"
+          },
+          "dataset": {
+            "type": "string",
+            "title": "Dataset"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ready",
+          "device",
+          "repo",
+          "dataset"
+        ],
+        "title": "ModelStatus"
+      },
+      "OkResponse": {
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "title": "Ok"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ok"
+        ],
+        "title": "OkResponse"
+      },
+      "RouteSuggestion": {
+        "properties": {
+          "from": {
+            "type": "string",
+            "title": "From"
+          },
+          "to": {
+            "type": "string",
+            "title": "To"
+          },
+          "avoid_zones": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avoid Zones"
+          },
+          "path": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Path"
+          },
+          "path_labels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Path Labels"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "from",
+          "to",
+          "path",
+          "path_labels",
+          "message"
+        ],
+        "title": "RouteSuggestion"
+      },
+      "Snapshot": {
+        "properties": {
+          "venue_id": {
+            "type": "string",
+            "title": "Venue Id"
+          },
+          "venue_name": {
+            "type": "string",
+            "title": "Venue Name"
+          },
+          "t": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "T"
+          },
+          "phase": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phase"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "zones": {
+            "items": {
+              "$ref": "#/components/schemas/ZoneSnapshot"
+            },
+            "type": "array",
+            "title": "Zones"
+          },
+          "bottlenecks": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Bottlenecks"
+          },
+          "routes": {
+            "items": {
+              "$ref": "#/components/schemas/RouteSuggestion"
+            },
+            "type": "array",
+            "title": "Routes"
+          },
+          "suggestion": {
+            "type": "string",
+            "title": "Suggestion"
+          },
+          "model": {
+            "$ref": "#/components/schemas/ModelMeta"
+          },
+          "history": {
+            "additionalProperties": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "object",
+            "title": "History"
+          }
+        },
+        "type": "object",
+        "required": [
+          "venue_id",
+          "venue_name",
+          "zones",
+          "bottlenecks",
+          "routes",
+          "suggestion",
+          "model",
+          "history"
+        ],
+        "title": "Snapshot"
+      },
+      "TimelineFrame": {
+        "properties": {
+          "t": {
+            "type": "number",
+            "title": "T"
+          },
+          "phase": {
+            "type": "string",
+            "title": "Phase"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note"
+          },
+          "densities": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Densities"
+          }
+        },
+        "type": "object",
+        "required": [
+          "t",
+          "phase",
+          "note",
+          "densities"
+        ],
+        "title": "TimelineFrame"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "Venue": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "width": {
+            "type": "number",
+            "title": "Width"
+          },
+          "height": {
+            "type": "number",
+            "title": "Height"
+          },
+          "zones": {
+            "items": {
+              "$ref": "#/components/schemas/VenueZone"
+            },
+            "type": "array",
+            "title": "Zones"
+          },
+          "graph": {
+            "$ref": "#/components/schemas/VenueGraph"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "width",
+          "height",
+          "zones",
+          "graph"
+        ],
+        "title": "Venue"
+      },
+      "VenueGraph": {
+        "properties": {
+          "nodes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Nodes"
+          },
+          "edges": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Edges"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nodes",
+          "edges"
+        ],
+        "title": "VenueGraph"
+      },
+      "VenueZone": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "capacity": {
+            "type": "number",
+            "title": "Capacity"
+          },
+          "polygon": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "title": "Polygon"
+          },
+          "centroid": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Centroid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "type",
+          "capacity",
+          "polygon",
+          "centroid"
+        ],
+        "title": "VenueZone"
+      },
+      "ZoneSnapshot": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "capacity": {
+            "type": "number",
+            "title": "Capacity"
+          },
+          "count_est": {
+            "type": "number",
+            "title": "Count Est"
+          },
+          "density": {
+            "type": "number",
+            "title": "Density"
+          },
+          "risk": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "title": "Risk"
+          },
+          "centroid": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Centroid"
+          },
+          "polygon": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "title": "Polygon"
+          },
+          "trend": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trend"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "type",
+          "capacity",
+          "count_est",
+          "density",
+          "risk",
+          "centroid",
+          "polygon"
+        ],
+        "title": "ZoneSnapshot"
+      }
+    }
+  }
+}

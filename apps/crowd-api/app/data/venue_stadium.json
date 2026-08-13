@@ -1,0 +1,108 @@
+{
+  "id": "plaksha_arena",
+  "name": "Plaksha Arena Concourse",
+  "width": 1000,
+  "height": 700,
+  "zones": [
+    {
+      "id": "gate_a",
+      "label": "Gate A",
+      "type": "entry",
+      "capacity": 90,
+      "polygon": [[40, 80], [180, 80], [180, 220], [40, 220]],
+      "centroid": [110, 150]
+    },
+    {
+      "id": "gate_b",
+      "label": "Gate B",
+      "type": "entry",
+      "capacity": 90,
+      "polygon": [[40, 280], [180, 280], [180, 420], [40, 420]],
+      "centroid": [110, 350]
+    },
+    {
+      "id": "walk_main",
+      "label": "Main Walkway",
+      "type": "walkway",
+      "capacity": 140,
+      "polygon": [[200, 120], [520, 120], [520, 380], [200, 380]],
+      "centroid": [360, 250]
+    },
+    {
+      "id": "walk_side",
+      "label": "Side Walkway",
+      "type": "walkway",
+      "capacity": 80,
+      "polygon": [[200, 420], [520, 420], [520, 560], [200, 560]],
+      "centroid": [360, 490]
+    },
+    {
+      "id": "food_1",
+      "label": "Food Court",
+      "type": "concession",
+      "capacity": 55,
+      "polygon": [[540, 80], [740, 80], [740, 240], [540, 240]],
+      "centroid": [640, 160]
+    },
+    {
+      "id": "stand_north",
+      "label": "North Stand",
+      "type": "stand",
+      "capacity": 200,
+      "polygon": [[760, 80], [960, 80], [960, 280], [760, 280]],
+      "centroid": [860, 180]
+    },
+    {
+      "id": "stand_south",
+      "label": "South Stand",
+      "type": "stand",
+      "capacity": 180,
+      "polygon": [[540, 300], [740, 300], [740, 520], [540, 520]],
+      "centroid": [640, 410]
+    },
+    {
+      "id": "exit_west",
+      "label": "West Exit",
+      "type": "exit",
+      "capacity": 70,
+      "polygon": [[40, 500], [180, 500], [180, 640], [40, 640]],
+      "centroid": [110, 570]
+    },
+    {
+      "id": "exit_east",
+      "label": "East Exit",
+      "type": "exit",
+      "capacity": 70,
+      "polygon": [[760, 420], [960, 420], [960, 640], [760, 640]],
+      "centroid": [860, 530]
+    }
+  ],
+  "graph": {
+    "nodes": [
+      "gate_a",
+      "gate_b",
+      "walk_main",
+      "walk_side",
+      "food_1",
+      "stand_north",
+      "stand_south",
+      "exit_west",
+      "exit_east"
+    ],
+    "edges": [
+      { "from": "gate_a", "to": "walk_main", "capacity": 90 },
+      { "from": "gate_b", "to": "walk_main", "capacity": 90 },
+      { "from": "gate_b", "to": "walk_side", "capacity": 70 },
+      { "from": "walk_main", "to": "food_1", "capacity": 50 },
+      { "from": "walk_main", "to": "stand_north", "capacity": 100 },
+      { "from": "walk_main", "to": "stand_south", "capacity": 80 },
+      { "from": "walk_main", "to": "walk_side", "capacity": 60 },
+      { "from": "walk_side", "to": "stand_south", "capacity": 70 },
+      { "from": "walk_side", "to": "exit_west", "capacity": 60 },
+      { "from": "food_1", "to": "stand_north", "capacity": 55 },
+      { "from": "stand_north", "to": "exit_east", "capacity": 70 },
+      { "from": "stand_south", "to": "exit_east", "capacity": 70 },
+      { "from": "stand_south", "to": "exit_west", "capacity": 50 }
+    ]
+  }
+}

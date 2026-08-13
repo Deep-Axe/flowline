@@ -1,0 +1,117 @@
+{
+  "duration_sec": 60,
+  "frames": [
+    {
+      "t": 0,
+      "phase": "pre_event",
+      "note": "Quiet concourse — gates opening",
+      "densities": {
+        "gate_a": 0.12,
+        "gate_b": 0.10,
+        "walk_main": 0.08,
+        "walk_side": 0.05,
+        "food_1": 0.06,
+        "stand_north": 0.04,
+        "stand_south": 0.03,
+        "exit_west": 0.02,
+        "exit_east": 0.02
+      }
+    },
+    {
+      "t": 8,
+      "phase": "entry_rush",
+      "note": "Entry rush building at Gate A",
+      "densities": {
+        "gate_a": 0.55,
+        "gate_b": 0.35,
+        "walk_main": 0.40,
+        "walk_side": 0.15,
+        "food_1": 0.20,
+        "stand_north": 0.25,
+        "stand_south": 0.18,
+        "exit_west": 0.05,
+        "exit_east": 0.05
+      }
+    },
+    {
+      "t": 16,
+      "phase": "entry_peak",
+      "note": "Gate A near capacity — divert via Gate B",
+      "densities": {
+        "gate_a": 0.88,
+        "gate_b": 0.48,
+        "walk_main": 0.72,
+        "walk_side": 0.22,
+        "food_1": 0.35,
+        "stand_north": 0.45,
+        "stand_south": 0.30,
+        "exit_west": 0.08,
+        "exit_east": 0.10
+      }
+    },
+    {
+      "t": 28,
+      "phase": "halftime",
+      "note": "Food court spike during break",
+      "densities": {
+        "gate_a": 0.25,
+        "gate_b": 0.22,
+        "walk_main": 0.55,
+        "walk_side": 0.30,
+        "food_1": 0.92,
+        "stand_north": 0.35,
+        "stand_south": 0.40,
+        "exit_west": 0.12,
+        "exit_east": 0.15
+      }
+    },
+    {
+      "t": 40,
+      "phase": "exit_start",
+      "note": "Early leavers — exits warming up",
+      "densities": {
+        "gate_a": 0.15,
+        "gate_b": 0.12,
+        "walk_main": 0.48,
+        "walk_side": 0.42,
+        "food_1": 0.28,
+        "stand_north": 0.50,
+        "stand_south": 0.55,
+        "exit_west": 0.60,
+        "exit_east": 0.45
+      }
+    },
+    {
+      "t": 52,
+      "phase": "exit_crush",
+      "note": "Exit crush at West — open East alternate",
+      "densities": {
+        "gate_a": 0.10,
+        "gate_b": 0.08,
+        "walk_main": 0.65,
+        "walk_side": 0.78,
+        "food_1": 0.18,
+        "stand_north": 0.40,
+        "stand_south": 0.70,
+        "exit_west": 0.95,
+        "exit_east": 0.50
+      }
+    },
+    {
+      "t": 60,
+      "phase": "clearing",
+      "note": "Crowd clearing — risk falling",
+      "densities": {
+        "gate_a": 0.08,
+        "gate_b": 0.06,
+        "walk_main": 0.30,
+        "walk_side": 0.35,
+        "food_1": 0.12,
+        "stand_north": 0.20,
+        "stand_south": 0.28,
+        "exit_west": 0.40,
+        "exit_east": 0.38
+      }
+    }
+  ]
+}

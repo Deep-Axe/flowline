@@ -1,0 +1,19 @@
+{
+  "name": "flowline",
+  "private": true,
+  "workspaces": [
+    "apps/ops-console",
+    "packages/contracts"
+  ],
+  "scripts": {
+    "dev:console": "npm --workspace apps/ops-console run dev",
+    "build:console": "npm --workspace apps/ops-console run build",
+    "contracts:generate": "npm --workspace packages/contracts run generate",
+    "contracts:check": "npm --workspace packages/contracts run check:stale",
+    "check": "powershell -File scripts/flowline.ps1 check",
+    "setup": "powershell -File scripts/flowline.ps1 setup"
+  },
+  "devDependencies": {
+    "playwright": "^1.62.1"
+  }
+}
