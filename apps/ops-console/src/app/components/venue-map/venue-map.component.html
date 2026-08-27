@@ -1,0 +1,70 @@
+<svg
+  class="venue-map"
+  [attr.viewBox]="'0 0 ' + venue().width + ' ' + venue().height"
+  role="img"
+  [attr.aria-label]="venue().name + ' crowd density map'"
+>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="oklch(1 0 0 / 0.04)" stroke-width="1" />
+    </pattern>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+      <feMerge>
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="oklch(0.78 0.11 210)" />
+    </marker>
+  </defs>
+
+  <rect [attr.width]="venue().width" [attr.height]="venue().height" fill="url(#grid)" />
+
+  @for (edge of venue().graph.edges; track edge.fromZone + '-' + edge.to) {
+    @if (edgeEnds(edge.fromZone, edge.to); as ends) {
+      <line
+        [attr.x1]="ends.a.centroid[0]"
+        [attr.y1]="ends.a.centroid[1]"
+        [attr.x2]="ends.b.centroid[0]"
+        [attr.y2]="ends.b.centroid[1]"
+        stroke="oklch(1 0 0 / 0.08)"
+        stroke-width="3"
+      />
+    }
+  }
+
+  @for (zone of venue().zones; track zone.id) {
+    <g [class.zone-pulse]="isHot(zone.id) && playing()">
+      <polygon
+        [attr.points]="polyPoints(zone.polygon)"
+        [attr.fill]="fill(zone.id)"
+        [attr.stroke]="stroke(zone.id)"
+        [attr.stroke-width]="isHot(zone.id) ? 3.5 : 1.5"
+        style="transition: fill 0.45s ease, stroke 0.45s ease"
+      />
+      <text [attr.x]="zone.centroid[0]" [attr.y]="zone.centroid[1] - 8" text-anchor="middle" class="zone-label">
+        {{ zone.label }}
+      </text>
+      <text [attr.x]="zone.centroid[0]" [attr.y]="zone.centroid[1] + 14" text-anchor="middle" class="zone-meta">
+        {{ meta(zone.id, zone.type) }}
+      </text>
+    </g>
+  }
+
+  @for (route of snapshot()?.routes ?? []; track $index) {
+    @if (routePath(route.path); as d) {
+      <path
+        [attr.d]="d"
+        fill="none"
+        stroke="oklch(0.78 0.11 210)"
+        stroke-width="4"
+        stroke-dasharray="10 8"
+        marker-end="url(#arrow)"
+        class="route-path"
+        filter="url(#glow)"
+      />
+    }
+  }
+</svg>

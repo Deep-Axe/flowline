@@ -27,9 +27,10 @@
 
 html,
 body,
-#root {
+app-root {
   margin: 0;
   min-height: 100%;
+  display: block;
 }
 
 body {
@@ -364,47 +365,26 @@ input {
 }
 
 @keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
 }
 
 @keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.72;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.72; }
 }
 
 @keyframes dash {
-  to {
-    stroke-dashoffset: -36;
-  }
+  to { stroke-dashoffset: -36; }
 }
 
 @media (max-width: 960px) {
-  .stage {
-    grid-template-columns: 1fr;
-  }
-
-  .topbar {
-    flex-direction: column;
-    align-items: start;
-  }
+  .stage { grid-template-columns: 1fr; }
+  .topbar { flex-direction: column; align-items: start; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation: none !important;
     transition: none !important;
   }

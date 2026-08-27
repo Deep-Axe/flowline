@@ -1,0 +1,7 @@
+<input #fileInput type="file" accept="image/*" hidden (change)="onChange($event)" />
+@if (previewUrl()) {
+  <div class="preview">
+    <img [src]="previewUrl()!" alt="Uploaded frame" />
+    <p>Model: {{ snapshot()?.model?.source }} · count ≈ {{ snapshot()?.model?.globalCount }}</p>
+  </div>
+}

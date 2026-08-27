@@ -12,11 +12,14 @@ tasks:
         sh: python -c "import sys; print('.venv/Scripts/pip' if sys.platform.startswith('win') else '.venv/bin/pip')"
 
   contracts:
-    desc: Export OpenAPI and regenerate TypeScript client
+    desc: Export OpenAPI + GraphQL and regenerate clients
     cmds:
       - '{{.VENV_PYTHON}} scripts/export_openapi.py'
+      - '{{.VENV_PYTHON}} scripts/export_graphql.py'
       - npm --workspace packages/contracts run generate
       - '{{.VENV_PYTHON}} scripts/stamp_contracts.py'
+      - npm --workspace apps/ops-console run codegen
+      - '{{.VENV_PYTHON}} scripts/stamp_graphql.py'
     vars:
       VENV_PYTHON:
         sh: python -c "import sys; print('.venv/Scripts/python' if sys.platform.startswith('win') else '.venv/bin/python')"
@@ -58,6 +61,9 @@ tasks:
     cmds:
       - task: contracts
       - npm --workspace packages/contracts run check:stale
+      - npm --workspace apps/ops-console run check:generated
+      - npm --workspace apps/ops-console run lint
+      - npm --workspace apps/ops-console run test
       - npm --workspace apps/ops-console run typecheck
       - task: test
 

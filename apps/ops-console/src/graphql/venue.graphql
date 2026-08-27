@@ -1,0 +1,24 @@
+query Venue {
+  venue {
+    id
+    name
+    width
+    height
+    zones {
+      id
+      label
+      type
+      capacity
+      polygon
+      centroid
+    }
+    graph {
+      nodes
+      edges {
+        fromZone
+        to
+        capacity
+      }
+    }
+  }
+}

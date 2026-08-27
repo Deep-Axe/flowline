@@ -32,24 +32,29 @@ jobs:
           python-version: "3.13"
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version-file: ".node-version"
           cache: npm
           cache-dependency-path: package-lock.json
       - name: Install JS
         run: |
           rm -rf node_modules apps/ops-console/node_modules packages/contracts/node_modules
           npm ci
-      - name: Install API deps for OpenAPI export
-        run: |
-          python -m pip install -r apps/crowd-api/requirements.txt
-      - name: Export + generate contracts
+      - name: Install API deps for schema export
+        run: python -m pip install -r apps/crowd-api/requirements.txt
+      - name: Export OpenAPI + GraphQL schemas
         run: |
           python scripts/export_openapi.py
+          python scripts/export_graphql.py
           npm --workspace packages/contracts run generate
           python scripts/stamp_contracts.py
           npm --workspace packages/contracts run check:stale
-      - name: Typecheck + build console
+          npm --workspace apps/ops-console run codegen
+          python scripts/stamp_graphql.py
+          npm --workspace apps/ops-console run check:generated
+      - name: Lint, test, typecheck, build Angular
         run: |
+          npm --workspace apps/ops-console run lint
+          npm --workspace apps/ops-console run test
           npm --workspace apps/ops-console run typecheck
           npm --workspace apps/ops-console run build
 
@@ -68,3 +73,4 @@ jobs:
           sleep 8
           curl -sf http://127.0.0.1:8001/health
           curl -sf "http://127.0.0.1:8001/api/demo/tick?t=16" | python -c "import sys,json; d=json.load(sys.stdin); assert d['bottlenecks']"
+          curl -sf http://127.0.0.1:8001/graphql -H 'content-type: application/json' -d '{"query":"query { venue { id } modelStatus { ready } demoTick(t: 16) { bottlenecks suggestion } }"}' | python -c "import sys,json; d=json.load(sys.stdin); assert d['data']['demoTick']['bottlenecks']"

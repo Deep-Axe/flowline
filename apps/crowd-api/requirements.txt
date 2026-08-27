@@ -9,3 +9,4 @@ torch==2.7.0
 torchvision==0.22.0
 pydantic==2.11.4
 scipy==1.15.2
+strawberry-graphql[fastapi]==0.270.1

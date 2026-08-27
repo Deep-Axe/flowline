@@ -1,0 +1,15 @@
+<div class="panel">
+  <p class="panel-title">Bottlenecks</p>
+  @if ((snapshot()?.bottlenecks?.length ?? 0) === 0) {
+    <p class="empty">None — concourse within capacity</p>
+  } @else {
+    <ul class="hot-list">
+      @for (id of snapshot()!.bottlenecks; track id) {
+        <li>
+          <strong>{{ zone(id)?.label ?? id }}</strong>
+          <span>{{ percent(id) }}% · {{ zone(id)?.trend }}</span>
+        </li>
+      }
+    </ul>
+  }
+</div>

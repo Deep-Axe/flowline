@@ -1,0 +1,21 @@
+<div class="trend-wrap">
+  <svg [attr.viewBox]="'0 0 ' + width + ' ' + height" class="trend-chart" aria-label="Density trend">
+    @for (g of [0.25, 0.5, 0.75]; track g) {
+      <line [attr.x1]="pad" [attr.x2]="width - pad" [attr.y1]="gridY(g)" [attr.y2]="gridY(g)" stroke="oklch(1 0 0 / 0.08)" />
+    }
+    @for (id of ids(); track id; let i = $index) {
+      <path
+        [attr.d]="pathFor(id)"
+        fill="none"
+        [attr.stroke]="colors[i % colors.length]"
+        stroke-width="2.5"
+        stroke-linecap="round"
+      />
+    }
+  </svg>
+  <div class="trend-legend">
+    @for (id of ids(); track id; let i = $index) {
+      <span [style.color]="colors[i % colors.length]">{{ label(id) }}</span>
+    }
+  </div>
+</div>

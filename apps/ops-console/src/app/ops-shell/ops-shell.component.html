@@ -1,0 +1,60 @@
+@if (booting() || (!venue() && error())) {
+  <app-status-banner [loading]="true" [error]="error()" />
+} @else if (venue(); as currentVenue) {
+  <div class="app">
+    <header class="topbar">
+      <div class="brand-block">
+        <p class="brand">FLOWLINE</p>
+        <p class="tagline">Live crowd density · bottleneck detection · reroute assist</p>
+      </div>
+      <app-model-status [status]="modelStatus()" [venue]="currentVenue" />
+    </header>
+
+    <main class="stage">
+      <section class="map-pane">
+        <app-venue-map [venue]="currentVenue" [snapshot]="snapshot()" [playing]="playing()" />
+        <div class="map-footer">
+          <div class="legend">
+            <span><i class="swatch low"></i> Low</span>
+            <span><i class="swatch mid"></i> Medium</span>
+            <span><i class="swatch high"></i> High</span>
+            <span><i class="swatch crit"></i> Critical</span>
+            <span><i class="swatch route"></i> Reroute</span>
+          </div>
+          <p class="clock">{{ clock().toFixed(1) }}s / {{ duration }}s</p>
+        </div>
+      </section>
+
+      <aside class="side">
+          <div class="suggest" [attr.data-hot]="(snapshot()?.bottlenecks?.length ?? 0) > 0">
+          <p class="suggest-label">Ops suggestion</p>
+          <p class="suggest-text">{{ snapshot()?.suggestion ?? '—' }}</p>
+          @if (snapshot()?.note) {
+            <p class="suggest-note">{{ snapshot()?.note }}</p>
+          }
+        </div>
+
+        <app-playback-controls
+          [playing]="playing()"
+          [clock]="clock()"
+          [duration]="duration"
+          [busy]="busy()"
+          (playToggle)="onPlayToggle()"
+          (resetDemo)="onReset()"
+          (uploadClick)="openUpload()"
+        />
+
+        <app-camera-upload [previewUrl]="previewUrl()" [snapshot]="snapshot()" (fileChosen)="onUpload($event)" />
+
+        <div class="panel">
+          <p class="panel-title">Density trend</p>
+          <app-trend-chart [snapshot]="snapshot()" />
+        </div>
+
+        <app-bottleneck-list [snapshot]="snapshot()" />
+        <app-route-suggestions [snapshot]="snapshot()" />
+        <app-status-banner [loading]="false" [error]="error()" />
+      </aside>
+    </main>
+  </div>
+}

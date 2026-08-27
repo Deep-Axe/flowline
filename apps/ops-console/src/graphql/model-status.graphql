@@ -1,0 +1,9 @@
+query ModelStatus {
+  modelStatus {
+    ready
+    device
+    repo
+    dataset
+    error
+  }
+}

@@ -1,12 +1,18 @@
 # FLOWLINE Ops Console
 
-React control-room UI for venue crowd density, bottlenecks, and reroutes.
-
-Talks to **crowd-api** only through the OpenAPI contract (`@flowline/contracts`).
+Angular 22 control-room UI. Venue, model status, replay, and reset go through **Apollo → GraphQL**. Camera frames use **HttpClient → REST** `/api/analyze`. Node **24.19.0** or newer (`^22.22.3 || ^24.15.0`).
 
 ```powershell
 npm install
-npm run dev
+npm --workspace apps/ops-console run codegen
+npm --workspace apps/ops-console run dev
 ```
 
-Proxies `/api` → `http://127.0.0.1:8001`.
+Dev server: http://127.0.0.1:5173 (proxies `/graphql` and `/api` to `:8001`).
+
+```powershell
+npm --workspace apps/ops-console run lint
+npm --workspace apps/ops-console run test
+npm --workspace apps/ops-console run typecheck
+npm --workspace apps/ops-console run build
+```

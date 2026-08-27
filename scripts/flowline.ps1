@@ -28,8 +28,11 @@ switch ($Command) {
   'contracts' {
     Ensure-Venv
     & $Py scripts\export_openapi.py
+    & $Py scripts\export_graphql.py
     npm --workspace packages/contracts run generate
     & $Py scripts\stamp_contracts.py
+    npm --workspace apps/ops-console run codegen
+    & $Py scripts\stamp_graphql.py
   }
   'api' {
     Ensure-Venv
@@ -47,6 +50,9 @@ switch ($Command) {
   'check' {
     & $PSCommandPath contracts
     npm --workspace packages/contracts run check:stale
+    npm --workspace apps/ops-console run check:generated
+    npm --workspace apps/ops-console run lint
+    npm --workspace apps/ops-console run test
     npm --workspace apps/ops-console run typecheck
     & $PSCommandPath test
   }

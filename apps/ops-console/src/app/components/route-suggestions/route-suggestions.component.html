@@ -1,0 +1,12 @@
+<div class="panel">
+  <p class="panel-title">Active reroutes</p>
+  @if ((snapshot()?.routes?.length ?? 0) === 0) {
+    <p class="empty">No alternate paths needed</p>
+  } @else {
+    <ul class="route-list">
+      @for (route of snapshot()!.routes; track $index) {
+        <li>{{ route.pathLabels.join(' -> ') }}</li>
+      }
+    </ul>
+  }
+</div>

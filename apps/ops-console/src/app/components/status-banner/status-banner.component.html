@@ -1,0 +1,8 @@
+@if (loading()) {
+  <div class="boot" role="status">
+    <p class="brand">FLOWLINE</p>
+    <p>{{ error() ?? loadingText() }}</p>
+  </div>
+} @else if (error()) {
+  <p class="error">{{ error() }}</p>
+}

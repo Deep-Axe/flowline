@@ -1,0 +1,6 @@
+<div class="status-pills">
+  <span class="pill" [class.ok]="status()?.ready" [class.warn]="status() && !status()?.ready">
+    HF CSRNet {{ status()?.ready ? 'ready' : 'fallback' }}
+  </span>
+  <span class="pill mute">{{ venue()?.name ?? 'Loading venue' }}</span>
+</div>

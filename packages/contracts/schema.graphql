@@ -1,0 +1,106 @@
+type GraphEdgeType {
+  fromZone: String!
+  to: String!
+  capacity: Float!
+}
+
+type HistorySeriesType {
+  zoneId: String!
+  values: [Float!]!
+}
+
+type ModelMetaType {
+  source: String!
+  modelRepo: String!
+  globalCount: Float!
+  ready: Boolean!
+  error: String
+}
+
+type ModelStatusType {
+  ready: Boolean!
+  device: String!
+  repo: String!
+  dataset: String!
+  error: String
+}
+
+type Mutation {
+  resetDemo: ResetDemoPayload!
+}
+
+type Query {
+  venue: VenueType!
+  modelStatus: ModelStatusType!
+  demoTick(t: Float! = 0): SnapshotType!
+}
+
+type ResetDemoPayload {
+  ok: Boolean!
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+type RouteSuggestionType {
+  fromZone: String!
+  to: String!
+  avoidZones: [String!]
+  path: [String!]!
+  pathLabels: [String!]!
+  message: String!
+}
+
+type SnapshotType {
+  venueId: String!
+  venueName: String!
+  t: Float
+  phase: String
+  note: String
+  zones: [ZoneSnapshotType!]!
+  bottlenecks: [String!]!
+  routes: [RouteSuggestionType!]!
+  suggestion: String!
+  model: ModelMetaType!
+  history: [HistorySeriesType!]!
+}
+
+type VenueGraphType {
+  nodes: [String!]!
+  edges: [GraphEdgeType!]!
+}
+
+type VenueType {
+  id: String!
+  name: String!
+  width: Float!
+  height: Float!
+  zones: [VenueZoneType!]!
+  graph: VenueGraphType!
+}
+
+type VenueZoneType {
+  id: String!
+  label: String!
+  type: String!
+  capacity: Float!
+  polygon: [[Float!]!]!
+  centroid: [Float!]!
+}
+
+type ZoneSnapshotType {
+  id: String!
+  label: String!
+  type: String!
+  capacity: Float!
+  countEst: Float!
+  density: Float!
+  risk: RiskLevel!
+  centroid: [Float!]!
+  polygon: [[Float!]!]!
+  trend: String
+}

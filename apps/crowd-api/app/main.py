@@ -3,7 +3,9 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute
+from strawberry.fastapi import GraphQLRouter
 
+from .graphql_schema import schema
 from .routes.analyze import router as analyze_router
 from .routes.api import router as api_router
 from .schemas import HealthResponse
@@ -34,6 +36,7 @@ app.add_middleware(
 
 app.include_router(api_router, prefix="/api", tags=["ops"])
 app.include_router(analyze_router, prefix="/api", tags=["ops"])
+app.include_router(GraphQLRouter(schema), prefix="/graphql")
 
 
 @app.get("/health", response_model=HealthResponse, tags=["system"])
