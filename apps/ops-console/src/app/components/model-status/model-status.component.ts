@@ -1,8 +1,9 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import type { ModelStatus, Venue } from '../../gql-models';
 
 @Component({
   selector: 'app-model-status',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './model-status.component.html',
 })
 export class ModelStatusComponent {

@@ -11,6 +11,7 @@
     "test": "ng test --watch=false",
     "lint": "eslint src --max-warnings=0",
     "typecheck": "ng build --configuration development",
+    "update": "ng update @angular/core @angular/cli --allow-dirty --force",
     "codegen": "graphql-codegen --config codegen.ts",
     "check:generated": "node ./scripts/check-generated.mjs"
   },

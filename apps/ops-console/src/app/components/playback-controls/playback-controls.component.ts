@@ -1,7 +1,8 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-playback-controls',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './playback-controls.component.html',
 })
 export class PlaybackControlsComponent {

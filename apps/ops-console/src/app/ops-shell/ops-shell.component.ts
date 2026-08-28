@@ -1,4 +1,12 @@
-import { Component, DestroyRef, inject, OnInit, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { from, Subject, switchMap } from 'rxjs';
 import { CameraUploadComponent } from '../components/camera-upload/camera-upload.component';
@@ -10,7 +18,12 @@ import { StatusBannerComponent } from '../components/status-banner/status-banner
 import { TrendChartComponent } from '../components/trend-chart/trend-chart.component';
 import { VenueMapComponent } from '../components/venue-map/venue-map.component';
 import { AnalyzeRestService } from '../services/analyze-rest.service';
-import { OpsGraphqlService, type ModelStatus, type Snapshot, type Venue } from '../services/ops-graphql.service';
+import {
+  OpsGraphqlService,
+  type ModelStatus,
+  type Snapshot,
+  type Venue,
+} from '../services/ops-graphql.service';
 
 const DEMO_DURATION = 60;
 
@@ -26,6 +39,7 @@ const DEMO_DURATION = 60;
     CameraUploadComponent,
     StatusBannerComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './ops-shell.component.html',
 })
 export class OpsShellComponent implements OnInit {

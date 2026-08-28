@@ -6,12 +6,15 @@
     "packages/contracts"
   ],
   "dependencies": {
-    "@angular/common": "^22.1.4"
+    "@angular/common": "^22.1.4",
+    "@angular/compiler": "^22.1.4",
+    "@angular/core": "^22.1.4"
   },
   "scripts": {
-    "dev:console": "npm --workspace apps/ops-console run dev",
-    "build:console": "npm --workspace apps/ops-console run build",
-    "test:console": "npm --workspace apps/ops-console run test",
+    "dev:console": "npm --prefix apps/ops-console run dev",
+    "build:console": "npm --prefix apps/ops-console run build",
+    "test:console": "npm --prefix apps/ops-console run test",
+    "update:console": "npm --prefix apps/ops-console run update",
     "contracts:generate": "npm --workspace packages/contracts run generate",
     "contracts:check": "npm --workspace packages/contracts run check:stale",
     "codegen": "npm --workspace apps/ops-console run codegen",

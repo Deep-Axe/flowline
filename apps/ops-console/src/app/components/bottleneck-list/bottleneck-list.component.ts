@@ -1,8 +1,9 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import type { Snapshot } from '../../gql-models';
 
 @Component({
   selector: 'app-bottleneck-list',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './bottleneck-list.component.html',
 })
 export class BottleneckListComponent {

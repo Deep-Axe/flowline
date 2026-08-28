@@ -1,7 +1,8 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-status-banner',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './status-banner.component.html',
 })
 export class StatusBannerComponent {

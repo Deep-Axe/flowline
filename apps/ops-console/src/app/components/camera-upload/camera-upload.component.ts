@@ -1,8 +1,16 @@
-import { Component, ElementRef, input, output, viewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  input,
+  output,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import type { Snapshot } from '../../gql-models';
 
 @Component({
   selector: 'app-camera-upload',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './camera-upload.component.html',
 })
 export class CameraUploadComponent {

@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import type { Snapshot } from '../../gql-models';
 
 const COLORS = [
@@ -10,6 +10,7 @@ const COLORS = [
 
 @Component({
   selector: 'app-trend-chart',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './trend-chart.component.html',
 })
 export class TrendChartComponent {
@@ -51,10 +52,7 @@ export class TrendChartComponent {
     if (!values.length) {
       return '';
     }
-    const maxLen = Math.max(
-      2,
-      ...this.ids().map((key) => (this.historyMap()[key] ?? []).length),
-    );
+    const maxLen = Math.max(2, ...this.ids().map((key) => (this.historyMap()[key] ?? []).length));
     return values
       .map((v, i) => {
         const x = this.pad + (i / (maxLen - 1 || 1)) * (this.width - this.pad * 2);

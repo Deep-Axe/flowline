@@ -8,7 +8,7 @@ npm --workspace apps/ops-console run codegen
 npm --workspace apps/ops-console run dev
 ```
 
-Dev server: http://127.0.0.1:5173 (proxies `/graphql` and `/api` to `:8001`).
+Angular CLI commands must run in this folder (`apps/ops-console`), not the monorepo root. `npm --workspace exec ng update` looks at the root package and reports `@angular/core` as missing.
 
 ```powershell
 npm --workspace apps/ops-console run lint

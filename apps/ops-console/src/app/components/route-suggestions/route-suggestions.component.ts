@@ -1,8 +1,9 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import type { Snapshot } from '../../gql-models';
 
 @Component({
   selector: 'app-route-suggestions',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './route-suggestions.component.html',
 })
 export class RouteSuggestionsComponent {

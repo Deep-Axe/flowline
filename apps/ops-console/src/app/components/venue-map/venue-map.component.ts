@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { RiskLevel, type Snapshot, type Venue } from '../../gql-models';
 
 const RISK_FILL: Record<string, string> = {
@@ -17,6 +17,7 @@ const RISK_STROKE: Record<string, string> = {
 
 @Component({
   selector: 'app-venue-map',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './venue-map.component.html',
 })
 export class VenueMapComponent {
