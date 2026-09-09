@@ -40,7 +40,7 @@ switch ($Command) {
     & $Py -m uvicorn app.main:app --reload --reload-dir apps\crowd-api\app --host 127.0.0.1 --port 8001
   }
   'console' {
-    npm --workspace apps/ops-console run dev
+    npm --prefix apps/ops-console run dev
   }
   'test' {
     Ensure-Venv
@@ -50,14 +50,14 @@ switch ($Command) {
   'check' {
     & $PSCommandPath contracts
     npm --workspace packages/contracts run check:stale
-    npm --workspace apps/ops-console run check:generated
-    npm --workspace apps/ops-console run lint
-    npm --workspace apps/ops-console run test
-    npm --workspace apps/ops-console run typecheck
+    npm --prefix apps/ops-console run check:generated
+    npm --prefix apps/ops-console run lint
+    npm --prefix apps/ops-console run test
+    npm --prefix apps/ops-console run typecheck
     & $PSCommandPath test
   }
   'build' {
-    npm --workspace apps/ops-console run build
+    npm --prefix apps/ops-console run build
   }
   'frames' {
     Ensure-Venv

@@ -15,6 +15,7 @@ async function shot(page, name, url) {
   await page.goto(url, { waitUntil: 'networkidle' })
   await page.getByText('FLOWLINE').first().waitFor({ timeout: 30000 })
   await page.locator('.venue-map').waitFor({ timeout: 15000 })
+  await page.getByText(/Play event replay|Resume replay|Pause replay/).first().waitFor({ timeout: 15000 })
   await page.waitForTimeout(900)
   await page.screenshot({ path: join(outDir, name), fullPage: true })
   console.log('wrote', name)
@@ -32,7 +33,7 @@ await shot(page, '03-exit-crush.png', 'http://127.0.0.1:5173/?t=52')
 
 await page.goto('http://127.0.0.1:5173/?t=0', { waitUntil: 'networkidle' })
 await page.getByText('FLOWLINE').first().waitFor({ timeout: 30000 })
-await page.getByText(/concourse within capacity|Crowd levels normal/i).first().waitFor({ timeout: 15000 })
+await page.getByText(/None — concourse within capacity/i).first().waitFor({ timeout: 15000 })
 await page.locator('input[type="file"]').setInputFiles(
   join(root, 'samples', 'camera-frames', 'entry_rush.jpg'),
 )

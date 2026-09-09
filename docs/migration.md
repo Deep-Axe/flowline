@@ -1,6 +1,6 @@
 # React to Angular migration
 
-This note maps the original Vite/React ops console (branch `main`) onto the Angular 22 standalone app on `feat/angular-22`.
+This note maps the original Vite/React ops console (branch `main`) onto the Angular 22 standalone app on `angular-22`.
 
 Angular 22 requires Node `^22.22.3 || ^24.15.0 || ^26`. This branch pins **Node 24.19.0** (see `.node-version`) and **Angular 22**. Switch back to `main` for the React/Vite console.
 

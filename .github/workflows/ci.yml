@@ -53,10 +53,10 @@ jobs:
           npm --workspace apps/ops-console run check:generated
       - name: Lint, test, typecheck, build Angular
         run: |
-          npm --workspace apps/ops-console run lint
-          npm --workspace apps/ops-console run test
-          npm --workspace apps/ops-console run typecheck
-          npm --workspace apps/ops-console run build
+          npm --prefix apps/ops-console run lint
+          npm --prefix apps/ops-console run test
+          npm --prefix apps/ops-console run typecheck
+          npm --prefix apps/ops-console run build
 
   integration:
     runs-on: ubuntu-latest

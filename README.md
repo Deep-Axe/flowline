@@ -2,7 +2,7 @@
 
 Crowd-operations prototype for venues: see density form, flag bottlenecks, suggest reroutes before queues turn unsafe.
 
-This branch (`feat/angular-22`) is the **Angular 22** console plus GraphQL. Checkout `main` for the original **React/Vite** console.
+This branch (`angular-22`) is the **Angular 22** console plus GraphQL. Checkout `main` for the original **React/Vite** console.
 
 ![FLOWLINE ops console — quiet concourse](docs/screenshots/01-ops-console-idle.png)
 
@@ -54,7 +54,7 @@ $env:PYTHONPATH = "apps\crowd-api"
 .\.venv\Scripts\python -m uvicorn app.main:app --reload --reload-dir apps\crowd-api\app --host 127.0.0.1 --port 8001
 
 # Console
-npm --workspace apps/ops-console run dev
+npm --prefix apps/ops-console run dev
 ```
 
 Open http://127.0.0.1:5173
@@ -67,7 +67,7 @@ If you use [Task](https://taskfile.dev): `task setup`, `task contracts`, `task d
 
 See [docs/demo.md](docs/demo.md). Sample frames live in `samples/camera-frames/`.
 
-React → Angular mapping: [docs/migration.md](docs/migration.md). Architecture: [docs/architecture.md](docs/architecture.md). Switch branches: `main` (React) vs `feat/angular-22` (Angular 22).
+React → Angular mapping: [docs/migration.md](docs/migration.md). Architecture: [docs/architecture.md](docs/architecture.md). Switch branches: `main` (React) vs `angular-22` (Angular 22).
 
 ```text
 Camera / replay  →  crowd-api  →  ops-console map
@@ -88,10 +88,10 @@ Camera / replay  →  crowd-api  →  ops-console map
 ```powershell
 $env:PYTHONPATH = "apps\crowd-api"
 .\.venv\Scripts\python -m pytest apps\crowd-api\tests -q
-npm --workspace apps/ops-console run lint
-npm --workspace apps/ops-console run test
-npm --workspace apps/ops-console run typecheck
-npm --workspace apps/ops-console run build
+npm --prefix apps/ops-console run lint
+npm --prefix apps/ops-console run test
+npm --prefix apps/ops-console run typecheck
+npm --prefix apps/ops-console run build
 ```
 
 Docker: `docker compose up --build` (console on http://localhost:5173, API on http://localhost:8001).
