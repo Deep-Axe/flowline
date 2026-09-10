@@ -27,11 +27,11 @@ const page = await browser.newPage({
   deviceScaleFactor: 1.5,
 })
 
-await shot(page, '01-ops-console-idle.png', 'http://127.0.0.1:5173/?t=0')
-await shot(page, '02-entry-rush-reroute.png', 'http://127.0.0.1:5173/?t=16')
-await shot(page, '03-exit-crush.png', 'http://127.0.0.1:5173/?t=52')
+await shot(page, '01-ops-console-idle.png', 'http://localhost:5173/?t=0')
+await shot(page, '02-entry-rush-reroute.png', 'http://localhost:5173/?t=16')
+await shot(page, '03-exit-crush.png', 'http://localhost:5173/?t=52')
 
-await page.goto('http://127.0.0.1:5173/?t=0', { waitUntil: 'networkidle' })
+await page.goto('http://localhost:5173/?t=0', { waitUntil: 'networkidle' })
 await page.getByText('FLOWLINE').first().waitFor({ timeout: 30000 })
 await page.getByText(/None — concourse within capacity/i).first().waitFor({ timeout: 15000 })
 await page.locator('input[type="file"]').setInputFiles(

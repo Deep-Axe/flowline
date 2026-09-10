@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import { OpsGraphqlService } from './services/ops-graphql.service';
+import { AnalyzeRestService } from './services/analyze-rest.service';
 
 describe('App', () => {
   beforeEach(async () => {
@@ -16,6 +17,7 @@ describe('App', () => {
             demoTick: () => Promise.resolve(null),
           },
         },
+        { provide: AnalyzeRestService, useValue: { upload: () => Promise.resolve(null) } },
       ],
     }).compileComponents();
   });

@@ -33,7 +33,7 @@ This branch (`angular-22`) is the **Angular 22** console plus GraphQL. Checkout 
 Regenerate screenshots (API on `:8001`, console on `:5173`):
 
 ```powershell
-node scripts/capture_screenshots.mjs
+npm run screenshots
 ```
 
 Needs **Node 24.19.0** (`fnm use` from `.node-version`, or Node `^22.22.3 || ^24.15.0`). Then:
