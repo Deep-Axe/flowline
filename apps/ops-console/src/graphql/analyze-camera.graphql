@@ -1,0 +1,42 @@
+mutation AnalyzeCamera($file: Upload!, $phase: String, $reset: Boolean) {
+  analyzeCamera(file: $file, phase: $phase, reset: $reset) {
+    venueId
+    venueName
+    t
+    phase
+    note
+    bottlenecks
+    suggestion
+    zones {
+      id
+      label
+      type
+      capacity
+      countEst
+      density
+      risk
+      centroid
+      polygon
+      trend
+    }
+    routes {
+      fromZone
+      to
+      avoidZones
+      path
+      pathLabels
+      message
+    }
+    model {
+      source
+      modelRepo
+      globalCount
+      ready
+      error
+    }
+    history {
+      zoneId
+      values
+    }
+  }
+}

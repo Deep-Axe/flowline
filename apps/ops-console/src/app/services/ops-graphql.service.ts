@@ -1,11 +1,15 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Apollo } from 'apollo-angular';
+import { print } from 'graphql';
 import { first, firstValueFrom, map } from 'rxjs';
 import {
+  AnalyzeCameraDocument,
   DemoTickDocument,
   ModelStatusDocument,
   ResetDemoDocument,
   VenueDocument,
+  type AnalyzeCameraMutation,
   type DemoTickQuery,
   type ModelStatusQuery,
   type ResetDemoMutation,
@@ -24,6 +28,7 @@ type ApolloResult<T> = {
 @Injectable({ providedIn: 'root' })
 export class OpsGraphqlService {
   private readonly apollo = inject(Apollo);
+  private readonly http = inject(HttpClient);
 
   loadVenue(): Promise<Venue> {
     return firstValueFrom(
@@ -73,6 +78,28 @@ export class OpsGraphqlService {
         }),
       ),
     );
+  }
+
+  async analyzeCamera(file: File, phase = 'camera_upload'): Promise<Snapshot> {
+    // Apollo HttpLink does not send the GraphQL multipart spec; post FormData instead.
+    const body = new FormData();
+    body.append(
+      'operations',
+      JSON.stringify({
+        query: print(AnalyzeCameraDocument),
+        variables: { file: null, phase, reset: false },
+      }),
+    );
+    body.append('map', JSON.stringify({ '0': ['variables.file'] }));
+    body.append('0', file, file.name);
+    const payload = await firstValueFrom(
+      this.http.post<{ data?: AnalyzeCameraMutation; errors?: { message: string }[] }>('/graphql', body),
+    );
+    const err = payload.errors?.[0]?.message;
+    if (err) {
+      throw new Error(err);
+    }
+    return this.require(payload.data?.analyzeCamera, null, 'camera analyze');
   }
 
   private resultError(result: ApolloResult<unknown>): unknown {

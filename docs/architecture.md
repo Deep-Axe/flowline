@@ -4,8 +4,7 @@ FLOWLINE is a monorepo with two deployable products and shared contracts.
 
 ```text
 ops-console (Angular + Apollo)
-        |  GraphQL  /graphql   venue, modelStatus, demoTick, resetDemo
-        |  REST     /api/analyze  camera-frame upload
+        |  GraphQL  /graphql   venue, modelStatus, demoTick, resetDemo, analyzeCamera
         v
 crowd-api (FastAPI + Strawberry)
         ├─ CSRNet (HF) / heuristic
@@ -15,11 +14,9 @@ crowd-api (FastAPI + Strawberry)
 
 ## Why GraphQL and REST
 
-GraphQL is used for **structured application state**: nested venue graphs, snapshots, bottlenecks, routes, and model status. One schema drives Angular GraphQL Code Generator, so the console does not hand-write response types.
+GraphQL is the console's application API: nested venue graphs, snapshots, bottlenecks, routes, model status, and camera analysis (`analyzeCamera` with the `Upload` scalar and the GraphQL multipart request spec). One schema drives Angular GraphQL Code Generator.
 
-REST remains responsible for **multipart camera uploads**. Binary files are a transport concern; forcing them through GraphQL multipart would add client and CI complexity without changing inference. `/api/analyze` still returns the same snapshot payload, which the console maps onto the generated GraphQL `Snapshot` type.
-
-Legacy REST ops endpoints (`/api/venue`, `/api/demo/tick`, …) stay for compatibility.
+REST `POST /api/analyze` and the other `/api/*` ops endpoints remain for OpenAPI clients and compatibility. The Angular console does not call REST for upload.
 
 ## Applications
 
@@ -41,7 +38,7 @@ The Angular app generates `src/generated/graphql.ts` from `schema.graphql` plus 
 ## Data flow
 
 1. **Replay** — GraphQL `demoTick(t)` over scripted densities
-2. **Upload** — REST multipart → CSRNet → snapshot mapped to GraphQL types
+2. **Upload** — GraphQL multipart `analyzeCamera` → CSRNet → `Snapshot`
 3. **Fallback** — heuristic density if HF weights unavailable
 
 ## Non-goals (for now)

@@ -17,7 +17,6 @@ import { RouteSuggestionsComponent } from '../components/route-suggestions/route
 import { StatusBannerComponent } from '../components/status-banner/status-banner.component';
 import { TrendChartComponent } from '../components/trend-chart/trend-chart.component';
 import { VenueMapComponent } from '../components/venue-map/venue-map.component';
-import { AnalyzeRestService } from '../services/analyze-rest.service';
 import {
   OpsGraphqlService,
   type ModelStatus,
@@ -44,7 +43,6 @@ const DEMO_DURATION = 60;
 })
 export class OpsShellComponent implements OnInit {
   private readonly graphql = inject(OpsGraphqlService);
-  private readonly analyze = inject(AnalyzeRestService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly tickRequests = new Subject<number>();
   private readonly uploader = viewChild(CameraUploadComponent);
@@ -140,7 +138,7 @@ export class OpsShellComponent implements OnInit {
     this.error.set(null);
     this.previewUrl.set(URL.createObjectURL(file));
     try {
-      this.snapshot.set(await this.analyze.upload(file));
+      this.snapshot.set(await this.graphql.analyzeCamera(file));
     } catch (err) {
       this.error.set(err instanceof Error ? err.message : 'Upload analyze failed');
     } finally {

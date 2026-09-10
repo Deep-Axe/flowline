@@ -1,6 +1,6 @@
 # FLOWLINE Ops Console
 
-Angular 22 control-room UI. Venue, model status, replay, and reset go through **Apollo → GraphQL**. Camera frames use **HttpClient → REST** `/api/analyze`. Node **24.19.0** or newer (`^22.22.3 || ^24.15.0`).
+Angular 22 control-room UI. Venue, model status, replay, reset, and camera-frame analysis go through **Apollo / GraphQL** (`analyzeCamera` uses the GraphQL multipart spec). Node **24.19.0** or newer (`^22.22.3 || ^24.15.0`).
 
 ```powershell
 npm install

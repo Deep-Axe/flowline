@@ -36,7 +36,7 @@ app.add_middleware(
 
 app.include_router(api_router, prefix="/api", tags=["ops"])
 app.include_router(analyze_router, prefix="/api", tags=["ops"])
-app.include_router(GraphQLRouter(schema), prefix="/graphql")
+app.include_router(GraphQLRouter(schema, multipart_uploads_enabled=True), prefix="/graphql")
 
 
 @app.get("/health", response_model=HealthResponse, tags=["system"])

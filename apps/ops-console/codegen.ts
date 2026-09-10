@@ -14,6 +14,9 @@ const config: CodegenConfig = {
           inputValue: false,
           object: false,
         },
+        scalars: {
+          Upload: 'File',
+        },
       },
     },
   },

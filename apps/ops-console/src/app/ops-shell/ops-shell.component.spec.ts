@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AnalyzeRestService } from '../services/analyze-rest.service';
 import { OpsGraphqlService } from '../services/ops-graphql.service';
 import { testSnapshot, testVenue } from '../testing/fixtures';
 import { OpsShellComponent } from './ops-shell.component';
@@ -19,9 +18,7 @@ describe('OpsShellComponent', () => {
       }),
     resetDemo: () => Promise.resolve(),
     demoTick: () => Promise.resolve(testSnapshot()),
-  };
-  const analyze = {
-    upload: () => Promise.resolve(testSnapshot({ suggestion: 'from camera' })),
+    analyzeCamera: () => Promise.resolve(testSnapshot({ suggestion: 'from camera' })),
   };
 
   beforeEach(async () => {
@@ -29,7 +26,6 @@ describe('OpsShellComponent', () => {
       imports: [OpsShellComponent],
       providers: [
         { provide: OpsGraphqlService, useValue: graphql },
-        { provide: AnalyzeRestService, useValue: analyze },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(OpsShellComponent);
@@ -45,7 +41,7 @@ describe('OpsShellComponent', () => {
     expect(fixture.componentInstance.venue()?.id).toBe('plaksha_arena');
   });
 
-  it('uploads a camera frame through the analyze service', async () => {
+  it('uploads a camera frame through GraphQL analyzeCamera', async () => {
     fixture.detectChanges();
     await fixture.whenStable();
     await fixture.componentInstance.onUpload(new File(['x'], 'frame.jpg', { type: 'image/jpeg' }));

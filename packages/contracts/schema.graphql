@@ -27,6 +27,7 @@ type ModelStatusType {
 
 type Mutation {
   resetDemo: ResetDemoPayload!
+  analyzeCamera(file: Upload!, phase: String = "camera_upload", reset: Boolean! = false): SnapshotType!
 }
 
 type Query {
@@ -68,6 +69,8 @@ type SnapshotType {
   model: ModelMetaType!
   history: [HistorySeriesType!]!
 }
+
+scalar Upload
 
 type VenueGraphType {
   nodes: [String!]!

@@ -8,7 +8,7 @@ Angular 22 requires Node `^22.22.3 || ^24.15.0 || ^26`. This branch pins **Node 
 
 Structured application state (venue layout, model readiness, demo snapshots, reset) is a typed graph of nested objects. GraphQL gives the console one schema, generated TypeScript types, and explicit loading/error handling without hand-maintained DTO copies.
 
-Camera-frame analysis stays on `POST /api/analyze`. Multipart file upload is a binary transport problem; GraphQL multipart is possible but adds client and CI complexity without a product benefit. The REST response is mapped onto the **generated GraphQL `Snapshot` type** so the UI still has a single snapshot shape.
+Camera-frame analysis uses GraphQL `analyzeCamera` with the multipart request spec (`Upload` scalar). REST `POST /api/analyze` remains for OpenAPI/compatibility.
 
 ## Component mapping
 
@@ -23,12 +23,12 @@ Camera-frame analysis stays on `POST /api/analyze`. Multipart file upload is a b
 | Bottleneck list | `BottleneckListComponent` |
 | Active reroutes | `RouteSuggestionsComponent` |
 | Suggestion banner + errors | `OpsShellComponent` + `StatusBannerComponent` |
-| `src/api.ts` OpenAPI wrappers | `OpsGraphqlService` (Apollo) + `AnalyzeRestService` (HttpClient) |
+| `src/api.ts` OpenAPI wrappers | `OpsGraphqlService` (Apollo + GraphQL multipart upload) |
 
 ## State
 
 - **Signals** hold venue, snapshot, playback clock, playing flag, upload busy, preview URL, and error text.
-- **RxJS** is used inside services for Apollo watches, HTTP upload, and `switchMap`/`takeUntilDestroyed` cancellation of in-flight demo ticks while the replay clock advances.
+- **RxJS** is used inside services for Apollo watches, GraphQL multipart upload, and `switchMap`/`takeUntilDestroyed` cancellation of in-flight demo ticks while the replay clock advances.
 
 ## Contracts
 

@@ -3,13 +3,15 @@ from __future__ import annotations
 from enum import Enum
 
 import strawberry
+from strawberry.file_uploads import Upload
 
 from .schemas import (
     ModelStatus as ModelStatusModel,
     Snapshot as SnapshotModel,
     Venue as VenueModel,
 )
-from .services.engine import demo_tick, load_venue, reset_history
+
+from .services.engine import analyze_frame, decode_upload, demo_tick, load_venue, reset_history
 from .services.hf_crowd import get_crowd_counter
 
 
@@ -239,6 +241,21 @@ class Mutation:
     def reset_demo(self) -> ResetDemoPayload:
         reset_history()
         return ResetDemoPayload(ok=True)
+
+    @strawberry.mutation
+    async def analyze_camera(
+        self,
+        file: Upload,
+        phase: str | None = "camera_upload",
+        reset: bool = False,
+    ) -> SnapshotType:
+        if reset:
+            reset_history()
+        raw = await file.read()
+        if not raw:
+            raise ValueError("Empty file")
+        image = decode_upload(raw)
+        return snapshot_from_model(SnapshotModel.model_validate(analyze_frame(image, phase=phase)))
 
 
 schema = strawberry.Schema(query=Query, mutation=Mutation)

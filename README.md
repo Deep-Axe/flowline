@@ -8,7 +8,7 @@ This branch (`angular-22`) is the **Angular 22** console plus GraphQL. Checkout 
 
 **Apps**
 
-- `apps/ops-console` — Angular 22 control-room dashboard (Apollo GraphQL + REST upload)
+- `apps/ops-console` — Angular 22 control-room dashboard (Apollo GraphQL, including camera upload)
 - `apps/crowd-api` — FastAPI + Strawberry GraphQL + CSRNet (Hugging Face) + risk + routing
 
 **Contracts**
@@ -71,8 +71,8 @@ React → Angular mapping: [docs/migration.md](docs/migration.md). Architecture:
 
 ```text
 Camera / replay  →  crowd-api  →  ops-console map
-                      ├─ GraphQL (venue, ticks, reset, model status)
-                      ├─ REST multipart analyze
+                      ├─ GraphQL (venue, ticks, reset, model status, analyzeCamera)
+                      ├─ REST /api/analyze (OpenAPI compatibility)
                       ├─ CSRNet (HF) or heuristic
                       ├─ capacity risk
                       └─ density-weighted routes

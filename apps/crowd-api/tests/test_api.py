@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -102,3 +103,40 @@ def test_rest_camera_upload():
     assert "zones" in body
     assert "suggestion" in body
     assert "model" in body
+
+
+ANALYZE_CAMERA = """
+mutation AnalyzeCamera($file: Upload!, $phase: String, $reset: Boolean) {
+  analyzeCamera(file: $file, phase: $phase, reset: $reset) {
+    suggestion
+    bottlenecks
+    model { source ready globalCount }
+    zones { id density }
+  }
+}
+"""
+
+
+def test_graphql_camera_upload():
+    assert FRAME.exists()
+    operations = {
+        "query": ANALYZE_CAMERA,
+        "variables": {"file": None, "phase": "camera_upload", "reset": False},
+    }
+    with FRAME.open("rb") as fh:
+        res = client.post(
+            "/graphql",
+            data={
+                "operations": json.dumps(operations),
+                "map": '{"0":["variables.file"]}',
+            },
+            files={"0": ("quiet.jpg", fh, "image/jpeg")},
+        )
+    assert res.status_code == 200
+    payload = res.json()
+    assert "errors" not in payload
+    snap = payload["data"]["analyzeCamera"]
+    assert snap["suggestion"]
+    assert snap["model"]["source"]
+    assert snap["zones"]
+
