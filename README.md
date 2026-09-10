@@ -94,4 +94,4 @@ npm --prefix apps/ops-console run typecheck
 npm --prefix apps/ops-console run build
 ```
 
-Docker: `docker compose up --build` (console on http://localhost:5173, API on http://localhost:8001).
+Docker: `docker compose up --build` (console on http://localhost:5173, API on http://localhost:8001). Requires Docker Desktop on PATH.

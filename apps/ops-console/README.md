@@ -8,7 +8,7 @@ npm --prefix apps/ops-console run codegen
 npm --prefix apps/ops-console run dev
 ```
 
-Angular CLI commands must run in this folder (`apps/ops-console`), not the monorepo root. `npm --workspace exec ng update` looks at the root package and reports `@angular/core` as missing.
+Angular CLI commands must run in this folder (`apps/ops-console`), not the monorepo root. From the repo root use `npm run update:console` — `npm --workspace exec ng update` looks at the root package and reports `@angular/core` as missing.
 
 ```powershell
 npm run lint

@@ -41,3 +41,13 @@ Camera-frame analysis stays on `POST /api/analyze`. Multipart file upload is a b
 Crowd counting (`hf_crowd` / CSRNet), risk scoring, and graph rerouting stay in `apps/crowd-api/app/services`. GraphQL resolvers call the same engine functions as REST.
 
 The Vite/React ops console was replaced by this Angular app. Do not reintroduce React or Vite into `apps/ops-console`.
+
+## Workspace notes
+
+The npm workspaces layout hoists some packages to the repo root. Root `package.json` lists `@angular/common`, `@angular/compiler`, and `@angular/core` so Apollo and the application builder can resolve those modules next to `apollo-angular`. That is not a second Angular app.
+
+`ng update` must run inside `apps/ops-console` (or `npm run update:console` from the repo root). `npm --workspace exec ng update` from the root package sees no `@angular/core` dependency.
+
+Angular 22 application-builder and Vitest are already in use. Karma, SSR, and trusted-proxy-header migrations do not apply to this console.
+
+Docker: `docker compose up --build` is the documented deploy path. This Windows checkout did not have `docker` on PATH, so compose was not verified here; the Dockerfiles still build the API and the nginx-wrapped Angular bundle.
