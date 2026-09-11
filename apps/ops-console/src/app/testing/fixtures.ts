@@ -109,6 +109,7 @@ export function testSnapshot(over: Partial<Snapshot> = {}): Snapshot {
         values: [0.2, 0.5, 0.88],
       },
     ],
+    incidents: [],
     ...over,
   };
 }

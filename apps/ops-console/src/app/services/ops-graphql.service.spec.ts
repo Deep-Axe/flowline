@@ -63,6 +63,7 @@ describe('OpsGraphqlService', () => {
           routes: [],
           model: { source: 'csrnet', modelRepo: 'hf', globalCount: 1, ready: true, error: null },
           history: [],
+          incidents: [],
         },
       },
     });

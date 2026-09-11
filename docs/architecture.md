@@ -10,6 +10,7 @@ ops-console (Angular + Apollo)
 crowd-api (FastAPI + Strawberry)
         ├─ CSRNet (HF) / heuristic
         ├─ risk engine
+        ├─ incident log / webhook
         └─ density-weighted graph router
 ```
 
@@ -40,7 +41,8 @@ The Angular app generates `src/generated/graphql.ts` from `schema.graphql` plus 
 
 1. **Replay** — GraphQL subscription `demoPlayback` streams timeline snapshots; `demoTick(t)` is the seek/boot query
 2. **Upload** — GraphQL multipart `analyzeCamera` → CSRNet → `Snapshot`
-3. **Fallback** — heuristic density if HF weights unavailable
+3. **Alerts** — rising-edge incidents when zone density crosses the operator threshold; optional webhook; console beep
+4. **Fallback** — heuristic density if HF weights unavailable
 
 ## Non-goals (for now)
 

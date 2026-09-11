@@ -37,6 +37,7 @@ function snapshot(over: Partial<Snapshot> = {}): Snapshot {
       error: null,
     },
     history: [],
+    incidents: [],
     ...over,
   };
 }

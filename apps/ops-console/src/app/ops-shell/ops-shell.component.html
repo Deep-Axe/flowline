@@ -7,7 +7,12 @@
         <p class="brand">FLOWLINE</p>
         <p class="tagline">Live crowd density · bottleneck detection · reroute assist</p>
       </div>
-      <app-model-status [status]="modelStatus()" [venue]="currentVenue" />
+      <div class="status-pills">
+        @if (openIncidents() > 0) {
+          <span class="pill warn">{{ openIncidents() }} open</span>
+        }
+        <app-model-status [status]="modelStatus()" [venue]="currentVenue" />
+      </div>
     </header>
 
     <main class="stage">
@@ -52,6 +57,16 @@
         </div>
 
         <app-bottleneck-list [snapshot]="snapshot()" />
+        <app-alert-panel
+          [snapshot]="snapshot()"
+          [config]="alertConfig()"
+          [muted]="muted()"
+          (muteToggle)="toggleMute()"
+          (thresholdChange)="onThreshold($event)"
+          (webhookSave)="onWebhook($event)"
+          (ack)="onAck($event)"
+          (clearLog)="onClearIncidents()"
+        />
         <app-route-suggestions [snapshot]="snapshot()" />
         <app-status-banner [loading]="false" [error]="error()" />
       </aside>

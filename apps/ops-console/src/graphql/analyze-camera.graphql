@@ -38,5 +38,17 @@ mutation AnalyzeCamera($file: Upload!, $phase: String, $reset: Boolean) {
       zoneId
       values
     }
+    incidents {
+      id
+      zoneId
+      zoneLabel
+      risk
+      density
+      t
+      suggestion
+      open
+      createdAt
+      resolvedAt
+    }
   }
 }

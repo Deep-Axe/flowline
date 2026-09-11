@@ -13,6 +13,14 @@ from .schemas import (
     Venue as VenueModel,
 )
 
+from .services.alerts import (
+    Incident as IncidentRecord,
+    ack_incident as resolve_incident,
+    clear_incidents as reset_incidents,
+    get_config,
+    list_incidents,
+    update_config,
+)
 from .services.engine import (
     analyze_frame,
     decode_upload,
@@ -105,6 +113,26 @@ class HistorySeriesType:
 
 
 @strawberry.type
+class IncidentType:
+    id: strawberry.ID
+    zone_id: str
+    zone_label: str
+    risk: RiskLevel
+    density: float
+    t: float | None
+    suggestion: str
+    open: bool
+    created_at: float
+    resolved_at: float | None = None
+
+
+@strawberry.type
+class AlertConfigType:
+    density_threshold: float
+    webhook_url: str | None = None
+
+
+@strawberry.type
 class SnapshotType:
     venue_id: str
     venue_name: str
@@ -117,6 +145,7 @@ class SnapshotType:
     suggestion: str
     model: ModelMetaType
     history: list[HistorySeriesType]
+    incidents: list[IncidentType]
 
 
 @strawberry.type
@@ -207,7 +236,28 @@ def snapshot_from_model(model: SnapshotModel) -> SnapshotType:
             error=model.model.error,
         ),
         history=history,
+        incidents=[incident_from_store(item) for item in list_incidents()],
     )
+
+
+def incident_from_store(inc: IncidentRecord) -> IncidentType:
+    return IncidentType(
+        id=strawberry.ID(inc.id),
+        zone_id=inc.zone_id,
+        zone_label=inc.zone_label,
+        risk=RiskLevel(inc.risk),
+        density=inc.density,
+        t=inc.t,
+        suggestion=inc.suggestion,
+        open=inc.open,
+        created_at=inc.created_at,
+        resolved_at=inc.resolved_at,
+    )
+
+
+def alert_config_from_store() -> AlertConfigType:
+    cfg = get_config()
+    return AlertConfigType(density_threshold=cfg.density_threshold, webhook_url=cfg.webhook_url)
 
 
 def model_status_from_pydantic(model: ModelStatusModel) -> ModelStatusType:
@@ -243,13 +293,45 @@ class Query:
     def demo_tick(self, t: float = 0.0) -> SnapshotType:
         return snapshot_from_model(SnapshotModel.model_validate(demo_tick(t)))
 
+    @strawberry.field
+    def incidents(self) -> list[IncidentType]:
+        return [incident_from_store(item) for item in list_incidents()]
+
+    @strawberry.field
+    def alert_config(self) -> AlertConfigType:
+        return alert_config_from_store()
+
 
 @strawberry.type
 class Mutation:
     @strawberry.mutation
     def reset_demo(self) -> ResetDemoPayload:
         reset_history()
+        reset_incidents()
         return ResetDemoPayload(ok=True)
+
+    @strawberry.mutation
+    def update_alert_config(
+        self,
+        density_threshold: float | None = None,
+        webhook_url: str | None = None,
+    ) -> AlertConfigType:
+        update_config(
+            density_threshold=density_threshold,
+            webhook_url=webhook_url,
+            clear_webhook=webhook_url == "",
+        )
+        return alert_config_from_store()
+
+    @strawberry.mutation
+    def clear_incidents(self) -> ResetDemoPayload:
+        reset_incidents()
+        return ResetDemoPayload(ok=True)
+
+    @strawberry.mutation
+    def ack_incident(self, id: strawberry.ID) -> IncidentType | None:
+        inc = resolve_incident(str(id))
+        return incident_from_store(inc) if inc else None
 
     @strawberry.mutation
     async def analyze_camera(

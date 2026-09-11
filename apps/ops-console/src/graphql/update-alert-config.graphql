@@ -1,0 +1,6 @@
+mutation UpdateAlertConfig($densityThreshold: Float, $webhookUrl: String) {
+  updateAlertConfig(densityThreshold: $densityThreshold, webhookUrl: $webhookUrl) {
+    densityThreshold
+    webhookUrl
+  }
+}

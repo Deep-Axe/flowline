@@ -33,6 +33,7 @@ describe('RouteSuggestionsComponent', () => {
         error: null,
       },
       history: [],
+      incidents: [],
     } satisfies Snapshot);
     await fixture.whenStable();
     fixture.detectChanges();
@@ -70,6 +71,7 @@ describe('RouteSuggestionsComponent', () => {
         error: null,
       },
       history: [],
+      incidents: [],
     } satisfies Snapshot);
     await fixture.whenStable();
     fixture.detectChanges();

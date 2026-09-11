@@ -170,3 +170,75 @@ def test_graphql_demo_playback_subscription():
         assert done["type"] == "complete"
 
 
+def test_graphql_incidents_and_alert_config(monkeypatch):
+    from app.services.alerts import DEFAULT_THRESHOLD, clear_incidents, update_config
+
+    clear_incidents()
+    update_config(density_threshold=DEFAULT_THRESHOLD, clear_webhook=True)
+
+    posted: list[dict] = []
+
+    class Immediate:
+        def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
+            if target:
+                target(*args, **(kwargs or {}))
+
+        def start(self):
+            return None
+
+    def fake_urlopen(req, timeout=2):
+        posted.append(json.loads(req.data.decode("utf-8")))
+
+        class _Resp:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def read(self):
+                return b"ok"
+
+        return _Resp()
+
+    monkeypatch.setattr("app.services.alerts.threading.Thread", Immediate)
+    monkeypatch.setattr("app.services.alerts.urllib.request.urlopen", fake_urlopen)
+
+    cfg = _gql(
+        """
+        mutation {
+          updateAlertConfig(densityThreshold: 0.75, webhookUrl: "http://example.test/hook") {
+            densityThreshold
+            webhookUrl
+          }
+        }
+        """
+    )
+    assert cfg.json()["data"]["updateAlertConfig"]["webhookUrl"] == "http://example.test/hook"
+
+    tick = _gql(
+        "query { demoTick(t: 16) { bottlenecks incidents { zoneId zoneLabel open } } }"
+    )
+    assert tick.status_code == 200
+    data = tick.json()["data"]["demoTick"]
+    assert "gate_a" in data["bottlenecks"]
+    open_zones = [i["zoneId"] for i in data["incidents"] if i["open"]]
+    assert "gate_a" in open_zones
+    assert posted and posted[0]["zoneId"] == "gate_a"
+
+    again = _gql("query { demoTick(t: 16) { incidents { zoneId open } } }")
+    gate_open = [i for i in again.json()["data"]["demoTick"]["incidents"] if i["zoneId"] == "gate_a" and i["open"]]
+    assert len(gate_open) == 1
+
+    quiet = _gql("query { demoTick(t: 0) { incidents { zoneId open } } }")
+    assert all(not i["open"] or i["zoneId"] != "gate_a" for i in quiet.json()["data"]["demoTick"]["incidents"])
+
+    reset = _gql("mutation { resetDemo { ok } }")
+    assert reset.json()["data"]["resetDemo"]["ok"] is True
+    empty = _gql("query { incidents { id } }")
+    assert empty.json()["data"]["incidents"] == []
+
+    update_config(density_threshold=DEFAULT_THRESHOLD, clear_webhook=True)
+
+
+

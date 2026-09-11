@@ -8,6 +8,7 @@ from typing import Any
 import cv2
 import numpy as np
 
+from .alerts import get_config, ingest_snapshot
 from .hf_crowd import get_crowd_counter, zone_counts_from_density
 from .risk import build_zone_snapshot, detect_bottlenecks, trend_label
 from .routing import compose_suggestion, suggest_reroutes
@@ -127,7 +128,7 @@ def _finalize_snapshot(
     t: float | None = None,
 ) -> dict[str, Any]:
     venue = load_venue()
-    bottlenecks = detect_bottlenecks(zone_snapshot)
+    bottlenecks = detect_bottlenecks(zone_snapshot, get_config().density_threshold)
     routes = suggest_reroutes(venue, zone_snapshot, bottlenecks)
     suggestion = compose_suggestion(zone_snapshot, bottlenecks, routes, phase=phase)
     trends = _push_history(zone_snapshot)
@@ -136,7 +137,7 @@ def _finalize_snapshot(
     for z in zone_snapshot:
         z["trend"] = trends.get(z["id"], "stable")
 
-    return {
+    result = {
         "venue_id": venue["id"],
         "venue_name": venue["name"],
         "t": t,
@@ -149,6 +150,8 @@ def _finalize_snapshot(
         "model": model_meta,
         "history": {zid: list(vals) for zid, vals in _history.items()},
     }
+    ingest_snapshot(result)
+    return result
 
 
 def demo_duration() -> float:

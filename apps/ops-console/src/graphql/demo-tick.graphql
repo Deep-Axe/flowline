@@ -38,5 +38,17 @@ query DemoTick($t: Float) {
       zoneId
       values
     }
+    incidents {
+      id
+      zoneId
+      zoneLabel
+      risk
+      density
+      t
+      suggestion
+      open
+      createdAt
+      resolvedAt
+    }
   }
 }

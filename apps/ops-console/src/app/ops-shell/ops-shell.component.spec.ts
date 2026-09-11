@@ -21,6 +21,10 @@ describe('OpsShellComponent', () => {
     demoTick: () => Promise.resolve(testSnapshot()),
     demoPlayback: () => of(testSnapshot({ t: 16.5, suggestion: 'live tick' })),
     analyzeCamera: () => Promise.resolve(testSnapshot({ suggestion: 'from camera' })),
+    loadAlertConfig: () => Promise.resolve({ densityThreshold: 0.75, webhookUrl: null }),
+    updateAlertConfig: () => Promise.resolve({ densityThreshold: 0.75, webhookUrl: null }),
+    clearIncidents: () => Promise.resolve(),
+    ackIncident: () => Promise.resolve(),
   };
 
   beforeEach(async () => {

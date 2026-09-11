@@ -1,3 +1,8 @@
+type AlertConfigType {
+  densityThreshold: Float!
+  webhookUrl: String
+}
+
 type GraphEdgeType {
   fromZone: String!
   to: String!
@@ -7,6 +12,19 @@ type GraphEdgeType {
 type HistorySeriesType {
   zoneId: String!
   values: [Float!]!
+}
+
+type IncidentType {
+  id: ID!
+  zoneId: String!
+  zoneLabel: String!
+  risk: RiskLevel!
+  density: Float!
+  t: Float
+  suggestion: String!
+  open: Boolean!
+  createdAt: Float!
+  resolvedAt: Float
 }
 
 type ModelMetaType {
@@ -27,6 +45,9 @@ type ModelStatusType {
 
 type Mutation {
   resetDemo: ResetDemoPayload!
+  updateAlertConfig(densityThreshold: Float = null, webhookUrl: String = null): AlertConfigType!
+  clearIncidents: ResetDemoPayload!
+  ackIncident(id: ID!): IncidentType
   analyzeCamera(file: Upload!, phase: String = "camera_upload", reset: Boolean! = false): SnapshotType!
 }
 
@@ -34,6 +55,8 @@ type Query {
   venue: VenueType!
   modelStatus: ModelStatusType!
   demoTick(t: Float! = 0): SnapshotType!
+  incidents: [IncidentType!]!
+  alertConfig: AlertConfigType!
 }
 
 type ResetDemoPayload {
@@ -68,6 +91,7 @@ type SnapshotType {
   suggestion: String!
   model: ModelMetaType!
   history: [HistorySeriesType!]!
+  incidents: [IncidentType!]!
 }
 
 type Subscription {

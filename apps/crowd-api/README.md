@@ -15,6 +15,7 @@ OpenAPI: http://127.0.0.1:8001/openapi.json
 GraphQL: http://127.0.0.1:8001/graphql  
 
 Replay: GraphQL subscription `demoPlayback` over WebSocket (`graphql-transport-ws`).  
+Alerts: rising-edge incidents, optional webhook, density threshold (`alertConfig`).  
 Camera frames: GraphQL `analyzeCamera` (`Upload` scalar, multipart). REST `POST /api/analyze` remains for OpenAPI clients.
 
 ## Hugging Face

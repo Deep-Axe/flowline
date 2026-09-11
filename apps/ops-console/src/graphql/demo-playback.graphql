@@ -38,5 +38,17 @@ subscription DemoPlayback($start: Float, $step: Float, $intervalMs: Int) {
       zoneId
       values
     }
+    incidents {
+      id
+      zoneId
+      zoneLabel
+      risk
+      density
+      t
+      suggestion
+      open
+      createdAt
+      resolvedAt
+    }
   }
 }

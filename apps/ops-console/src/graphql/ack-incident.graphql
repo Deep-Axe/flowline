@@ -1,0 +1,7 @@
+mutation AckIncident($id: ID!) {
+  ackIncident(id: $id) {
+    id
+    open
+    resolvedAt
+  }
+}

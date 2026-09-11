@@ -1,0 +1,6 @@
+query AlertConfig {
+  alertConfig {
+    densityThreshold
+    webhookUrl
+  }
+}

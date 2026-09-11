@@ -4,22 +4,31 @@ import { Apollo } from 'apollo-angular';
 import { print } from 'graphql';
 import { first, firstValueFrom, map, type Observable } from 'rxjs';
 import {
+  AckIncidentDocument,
+  AlertConfigDocument,
   AnalyzeCameraDocument,
+  ClearIncidentsDocument,
   DemoPlaybackDocument,
   DemoTickDocument,
   ModelStatusDocument,
   ResetDemoDocument,
+  UpdateAlertConfigDocument,
   VenueDocument,
+  type AckIncidentMutation,
+  type AlertConfigQuery,
   type AnalyzeCameraMutation,
+  type ClearIncidentsMutation,
   type DemoPlaybackSubscription,
   type DemoTickQuery,
   type ModelStatusQuery,
   type ResetDemoMutation,
+  type UpdateAlertConfigMutation,
   type VenueQuery,
 } from '../../generated/graphql';
 import type { ModelStatus, Snapshot, Venue } from '../gql-models';
 
 export type { ModelStatus, Snapshot, Venue };
+export type AlertConfig = AlertConfigQuery['alertConfig'];
 
 type ApolloResult<T> = {
   data?: T | null;
@@ -111,6 +120,59 @@ export class OpsGraphqlService {
       throw new Error(err);
     }
     return this.require(payload.data?.analyzeCamera, null, 'camera analyze');
+  }
+
+  loadAlertConfig(): Promise<AlertConfig> {
+    return firstValueFrom(
+      this.apollo
+        .query<AlertConfigQuery>({ query: AlertConfigDocument, fetchPolicy: 'network-only' })
+        .pipe(
+          first(),
+          map((r) => this.require(r.data?.alertConfig, this.resultError(r), 'alert config')),
+        ),
+    );
+  }
+
+  updateAlertConfig(densityThreshold?: number, webhookUrl?: string | null): Promise<AlertConfig> {
+    return firstValueFrom(
+      this.apollo
+        .mutate<UpdateAlertConfigMutation>({
+          mutation: UpdateAlertConfigDocument,
+          variables: { densityThreshold, webhookUrl },
+        })
+        .pipe(
+          first(),
+          map((r) =>
+            this.require(r.data?.updateAlertConfig, this.resultError(r), 'update alert config'),
+          ),
+        ),
+    );
+  }
+
+  clearIncidents(): Promise<void> {
+    return firstValueFrom(
+      this.apollo.mutate<ClearIncidentsMutation>({ mutation: ClearIncidentsDocument }).pipe(
+        first(),
+        map((r) => {
+          if (this.resultError(r) || !r.data?.clearIncidents.ok) {
+            throw new Error('clear incidents failed');
+          }
+        }),
+      ),
+    );
+  }
+
+  ackIncident(id: string): Promise<void> {
+    return firstValueFrom(
+      this.apollo.mutate<AckIncidentMutation>({ mutation: AckIncidentDocument, variables: { id } }).pipe(
+        first(),
+        map((r) => {
+          if (this.resultError(r) || !r.data?.ackIncident) {
+            throw new Error('ack incident failed');
+          }
+        }),
+      ),
+    );
   }
 
   private resultError(result: ApolloResult<unknown>): unknown {

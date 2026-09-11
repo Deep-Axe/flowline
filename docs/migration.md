@@ -21,6 +21,7 @@ Camera-frame analysis uses GraphQL `analyzeCamera` with the multipart request sp
 | Play / pause / reset | `PlaybackControlsComponent` |
 | Hidden file input + analyze | `CameraUploadComponent` |
 | Bottleneck list | `BottleneckListComponent` |
+| Incident log / mute / webhook | `AlertPanelComponent` |
 | Active reroutes | `RouteSuggestionsComponent` |
 | Suggestion banner + errors | `OpsShellComponent` + `StatusBannerComponent` |
 | `src/api.ts` OpenAPI wrappers | `OpsGraphqlService` (Apollo + GraphQL multipart upload) |
