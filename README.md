@@ -61,7 +61,7 @@ Open http://127.0.0.1:5173
 
 GraphQL endpoint: http://127.0.0.1:8001/graphql
 
-If you use [Task](https://taskfile.dev): `task setup`, `task contracts`, `task dev`, `task check`.
+If you use [Task](https://taskfile.dev): `task setup`, `task contracts`, `task dev`, `task check`. End-to-end: `npm run e2e` (starts API + console, Playwright replay + camera upload).
 
 ## Demo
 
@@ -92,6 +92,7 @@ npm --prefix apps/ops-console run lint
 npm --prefix apps/ops-console run test
 npm --prefix apps/ops-console run typecheck
 npm --prefix apps/ops-console run build
+npm run e2e
 ```
 
 Docker: `docker compose up --build` (console on http://localhost:5173, API on http://localhost:8001). Requires Docker Desktop on PATH.

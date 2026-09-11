@@ -20,12 +20,14 @@
     "codegen": "npm --workspace apps/ops-console run codegen",
     "check": "powershell -File scripts/flowline.ps1 check",
     "setup": "powershell -File scripts/flowline.ps1 setup",
-    "screenshots": "node scripts/capture_screenshots.mjs"
+    "screenshots": "node scripts/capture_screenshots.mjs",
+    "e2e": "playwright test"
   },
   "engines": {
     "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "playwright": "^1.63.0",
     "typescript": "~6.0.3"
   }
