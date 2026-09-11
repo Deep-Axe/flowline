@@ -140,3 +140,33 @@ def test_graphql_camera_upload():
     assert snap["model"]["source"]
     assert snap["zones"]
 
+
+def test_graphql_demo_playback_subscription():
+    from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL
+
+    query = """
+    subscription {
+      demoPlayback(start: 16, step: 50, intervalMs: 0) {
+        t
+        bottlenecks
+        suggestion
+      }
+    }
+    """
+    with client.websocket_connect("/graphql", subprotocols=[GRAPHQL_TRANSPORT_WS_PROTOCOL]) as ws:
+        ws.send_json({"type": "connection_init"})
+        ack = ws.receive_json()
+        assert ack["type"] == "connection_ack"
+        ws.send_json({"id": "1", "type": "subscribe", "payload": {"query": query}})
+        first = ws.receive_json()
+        assert first["type"] == "next"
+        peak = first["payload"]["data"]["demoPlayback"]
+        assert peak["t"] == 16
+        assert "gate_a" in peak["bottlenecks"]
+        last = ws.receive_json()
+        assert last["type"] == "next"
+        assert last["payload"]["data"]["demoPlayback"]["t"] == 60
+        done = ws.receive_json()
+        assert done["type"] == "complete"
+
+

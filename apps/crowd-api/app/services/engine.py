@@ -151,6 +151,10 @@ def _finalize_snapshot(
     }
 
 
+def demo_duration() -> float:
+    return float(load_timeline()["duration_sec"])
+
+
 def demo_tick(t: float) -> dict[str, Any]:
     timeline = load_timeline()
     frames = timeline["frames"]

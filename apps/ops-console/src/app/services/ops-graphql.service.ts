@@ -2,14 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { print } from 'graphql';
-import { first, firstValueFrom, map } from 'rxjs';
+import { first, firstValueFrom, map, type Observable } from 'rxjs';
 import {
   AnalyzeCameraDocument,
+  DemoPlaybackDocument,
   DemoTickDocument,
   ModelStatusDocument,
   ResetDemoDocument,
   VenueDocument,
   type AnalyzeCameraMutation,
+  type DemoPlaybackSubscription,
   type DemoTickQuery,
   type ModelStatusQuery,
   type ResetDemoMutation,
@@ -65,6 +67,15 @@ export class OpsGraphqlService {
           map((r) => this.require(r.data?.demoTick, this.resultError(r), 'demo tick')),
         ),
     );
+  }
+
+  demoPlayback(start: number, step = 0.5, intervalMs = 500): Observable<Snapshot> {
+    return this.apollo
+      .subscribe<DemoPlaybackSubscription>({
+        query: DemoPlaybackDocument,
+        variables: { start, step, intervalMs },
+      })
+      .pipe(map((r) => this.require(r.data?.demoPlayback, this.resultError(r), 'demo playback')));
   }
 
   resetDemo(): Promise<void> {

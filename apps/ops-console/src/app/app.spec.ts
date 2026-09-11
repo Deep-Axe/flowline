@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import { OpsGraphqlService } from './services/ops-graphql.service';
+import { EMPTY } from 'rxjs';
 
 describe('App', () => {
   beforeEach(async () => {
@@ -14,6 +15,7 @@ describe('App', () => {
             loadModelStatus: () => Promise.resolve({ ready: true }),
             resetDemo: () => Promise.resolve(),
             demoTick: () => Promise.resolve(null),
+            demoPlayback: () => EMPTY,
             analyzeCamera: () => Promise.resolve(null),
           },
         },

@@ -70,6 +70,10 @@ type SnapshotType {
   history: [HistorySeriesType!]!
 }
 
+type Subscription {
+  demoPlayback(start: Float! = 0, step: Float! = 0.5, intervalMs: Int! = 500): SnapshotType!
+}
+
 scalar Upload
 
 type VenueGraphType {

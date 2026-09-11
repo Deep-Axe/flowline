@@ -71,7 +71,7 @@ React → Angular mapping: [docs/migration.md](docs/migration.md). Architecture:
 
 ```text
 Camera / replay  →  crowd-api  →  ops-console map
-                      ├─ GraphQL (venue, ticks, reset, model status, analyzeCamera)
+                      ├─ GraphQL (venue, ticks, reset, model status, analyzeCamera, demoPlayback WS)
                       ├─ REST /api/analyze (OpenAPI compatibility)
                       ├─ CSRNet (HF) or heuristic
                       ├─ capacity risk

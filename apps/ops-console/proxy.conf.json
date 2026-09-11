@@ -7,7 +7,8 @@
   "/graphql": {
     "target": "http://127.0.0.1:8001",
     "secure": false,
-    "changeOrigin": true
+    "changeOrigin": true,
+    "ws": true
   },
   "/health": {
     "target": "http://127.0.0.1:8001",

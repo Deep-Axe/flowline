@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 import { OpsGraphqlService } from '../services/ops-graphql.service';
 import { testSnapshot, testVenue } from '../testing/fixtures';
 import { OpsShellComponent } from './ops-shell.component';
@@ -18,6 +19,7 @@ describe('OpsShellComponent', () => {
       }),
     resetDemo: () => Promise.resolve(),
     demoTick: () => Promise.resolve(testSnapshot()),
+    demoPlayback: () => of(testSnapshot({ t: 16.5, suggestion: 'live tick' })),
     analyzeCamera: () => Promise.resolve(testSnapshot({ suggestion: 'from camera' })),
   };
 
@@ -48,5 +50,14 @@ describe('OpsShellComponent', () => {
     fixture.detectChanges();
     expect(fixture.componentInstance.snapshot()?.suggestion).toBe('from camera');
     expect(fixture.componentInstance.busy()).toBe(false);
+  });
+
+  it('advances the clock from GraphQL demoPlayback', async () => {
+    fixture.detectChanges();
+    await fixture.componentInstance.boot();
+    await fixture.componentInstance.onPlayToggle();
+    fixture.detectChanges();
+    expect(fixture.componentInstance.snapshot()?.suggestion).toBe('live tick');
+    expect(fixture.componentInstance.clock()).toBe(16.5);
   });
 });

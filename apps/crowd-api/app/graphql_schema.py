@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import asyncio
+from collections.abc import AsyncGenerator
 from enum import Enum
 
 import strawberry
@@ -11,7 +13,14 @@ from .schemas import (
     Venue as VenueModel,
 )
 
-from .services.engine import analyze_frame, decode_upload, demo_tick, load_venue, reset_history
+from .services.engine import (
+    analyze_frame,
+    decode_upload,
+    demo_duration,
+    demo_tick,
+    load_venue,
+    reset_history,
+)
 from .services.hf_crowd import get_crowd_counter
 
 
@@ -258,4 +267,28 @@ class Mutation:
         return snapshot_from_model(SnapshotModel.model_validate(analyze_frame(image, phase=phase)))
 
 
-schema = strawberry.Schema(query=Query, mutation=Mutation)
+@strawberry.type
+class Subscription:
+    @strawberry.subscription
+    async def demo_playback(
+        self,
+        start: float = 0.0,
+        step: float = 0.5,
+        interval_ms: int = 500,
+    ) -> AsyncGenerator[SnapshotType, None]:
+        duration = demo_duration()
+        t = min(duration, max(0.0, start))
+        step = max(0.1, step)
+        delay = max(0, interval_ms) / 1000.0
+        first = True
+        while True:
+            if not first and delay:
+                await asyncio.sleep(delay)
+            first = False
+            yield snapshot_from_model(SnapshotModel.model_validate(demo_tick(t)))
+            if t >= duration:
+                break
+            t = min(duration, t + step)
+
+
+schema = strawberry.Schema(query=Query, mutation=Mutation, subscription=Subscription)

@@ -28,7 +28,7 @@ Camera-frame analysis uses GraphQL `analyzeCamera` with the multipart request sp
 ## State
 
 - **Signals** hold venue, snapshot, playback clock, playing flag, upload busy, preview URL, and error text.
-- **RxJS** is used inside services for Apollo watches, GraphQL multipart upload, and `switchMap`/`takeUntilDestroyed` cancellation of in-flight demo ticks while the replay clock advances.
+- **RxJS** is used inside services for Apollo watches, GraphQL multipart upload, and `demoPlayback` subscriptions (replacing requestAnimationFrame polling of `demoTick`).
 
 ## Contracts
 
@@ -44,7 +44,7 @@ The Vite/React ops console was replaced by this Angular app. Do not reintroduce 
 
 ## Workspace notes
 
-The npm workspaces layout hoists some packages to the repo root. Root `package.json` lists `@angular/common`, `@angular/compiler`, and `@angular/core` so Apollo and the application builder can resolve those modules next to `apollo-angular`. That is not a second Angular app.
+The npm workspaces layout hoists some packages to the repo root. Root `package.json` lists `@angular/common`, `@angular/compiler`, `@angular/core`, and `typescript` so Apollo, ESLint, and the application builder can resolve those modules next to `apollo-angular`. That is not a second Angular app.
 
 `ng update` must run inside `apps/ops-console` (or `npm run update:console` from the repo root). `npm --workspace exec ng update` from the root package sees no `@angular/core` dependency.
 

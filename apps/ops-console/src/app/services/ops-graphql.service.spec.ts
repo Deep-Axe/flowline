@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Apollo } from 'apollo-angular';
-import { of, throwError } from 'rxjs';
+import { firstValueFrom, of, throwError } from 'rxjs';
 import { OpsGraphqlService } from './ops-graphql.service';
 
 describe('OpsGraphqlService', () => {
@@ -88,5 +88,21 @@ describe('OpsGraphqlService', () => {
     req.flush({ errors: [{ message: 'Empty file' }] });
     await expect(pending).rejects.toThrow('Empty file');
     http.verify();
+  });
+
+  it('unwraps demoPlayback subscription payloads', async () => {
+    const apollo = {
+      subscribe: () =>
+        of({
+          data: { demoPlayback: { suggestion: 'live', t: 16, venueId: 'plaksha_arena' } },
+          error: undefined,
+        }),
+    };
+    TestBed.configureTestingModule({
+      providers: [OpsGraphqlService, provideHttpClient(), { provide: Apollo, useValue: apollo }],
+    });
+    const snap = await firstValueFrom(TestBed.inject(OpsGraphqlService).demoPlayback(16));
+    expect(snap.suggestion).toBe('live');
+    expect(snap.t).toBe(16);
   });
 });

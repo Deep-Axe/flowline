@@ -8,7 +8,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { from, Subject, switchMap } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { CameraUploadComponent } from '../components/camera-upload/camera-upload.component';
 import { BottleneckListComponent } from '../components/bottleneck-list/bottleneck-list.component';
 import { ModelStatusComponent } from '../components/model-status/model-status.component';
@@ -44,8 +44,8 @@ const DEMO_DURATION = 60;
 export class OpsShellComponent implements OnInit {
   private readonly graphql = inject(OpsGraphqlService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly tickRequests = new Subject<number>();
   private readonly uploader = viewChild(CameraUploadComponent);
+  private playback: Subscription | null = null;
 
   readonly duration = DEMO_DURATION;
   readonly venue = signal<Venue | null>(null);
@@ -58,23 +58,8 @@ export class OpsShellComponent implements OnInit {
   readonly previewUrl = signal<string | null>(null);
   readonly booting = signal(true);
 
-  private raf: number | null = null;
-  private startMs: number | null = null;
-
   constructor() {
-    this.tickRequests
-      .pipe(
-        switchMap((t) => from(this.graphql.demoTick(t))),
-        takeUntilDestroyed(),
-      )
-      .subscribe({
-        next: (snap) => this.snapshot.set(snap),
-        error: (err: unknown) => {
-          this.error.set(err instanceof Error ? err.message : 'Demo failed');
-          this.playing.set(false);
-        },
-      });
-    this.destroyRef.onDestroy(() => this.stopLoop());
+    this.destroyRef.onDestroy(() => this.stopPlayback());
   }
 
   ngOnInit(): void {
@@ -111,14 +96,14 @@ export class OpsShellComponent implements OnInit {
     }
     this.playing.update((value) => !value);
     if (this.playing()) {
-      this.startLoop();
+      this.startPlayback();
     } else {
-      this.stopLoop();
+      this.stopPlayback();
     }
   }
 
   async onReset(): Promise<void> {
-    this.stopLoop();
+    this.stopPlayback();
     this.playing.set(false);
     this.clock.set(0);
     this.previewUrl.set(null);
@@ -132,7 +117,7 @@ export class OpsShellComponent implements OnInit {
   }
 
   async onUpload(file: File): Promise<void> {
-    this.stopLoop();
+    this.stopPlayback();
     this.playing.set(false);
     this.busy.set(true);
     this.error.set(null);
@@ -146,37 +131,36 @@ export class OpsShellComponent implements OnInit {
     }
   }
 
-  private startLoop(): void {
-    this.stopLoop();
-    this.startMs = null;
-    let lastFetch = -1;
-    const step = (now: number) => {
-      if (this.startMs == null) {
-        this.startMs = now - this.clock() * 1000;
-      }
-      const elapsed = Math.min(DEMO_DURATION, (now - this.startMs) / 1000);
-      this.clock.set(elapsed);
-      const bucket = Math.floor(elapsed * 2) / 2;
-      if (bucket !== lastFetch) {
-        lastFetch = bucket;
-        this.tickRequests.next(bucket);
-      }
-      if (elapsed >= DEMO_DURATION) {
-        this.playing.set(false);
-        this.clock.set(DEMO_DURATION);
-        this.stopLoop();
-        return;
-      }
-      this.raf = requestAnimationFrame(step);
-    };
-    this.raf = requestAnimationFrame(step);
+  private startPlayback(): void {
+    this.stopPlayback();
+    this.playback = this.graphql
+      .demoPlayback(this.clock())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (snap) => {
+          this.snapshot.set(snap);
+          if (typeof snap.t === 'number') {
+            this.clock.set(snap.t);
+          }
+          if ((snap.t ?? 0) >= DEMO_DURATION) {
+            this.playing.set(false);
+            this.stopPlayback();
+          }
+        },
+        error: (err: unknown) => {
+          this.error.set(err instanceof Error ? err.message : 'Demo failed');
+          this.playing.set(false);
+          this.stopPlayback();
+        },
+        complete: () => {
+          this.playing.set(false);
+          this.stopPlayback();
+        },
+      });
   }
 
-  private stopLoop(): void {
-    if (this.raf != null) {
-      cancelAnimationFrame(this.raf);
-      this.raf = null;
-    }
-    this.startMs = null;
+  private stopPlayback(): void {
+    this.playback?.unsubscribe();
+    this.playback = null;
   }
 }

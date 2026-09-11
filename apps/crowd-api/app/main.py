@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute
 from strawberry.fastapi import GraphQLRouter
+from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
 
 from .graphql_schema import schema
 from .routes.analyze import router as analyze_router
@@ -36,7 +37,14 @@ app.add_middleware(
 
 app.include_router(api_router, prefix="/api", tags=["ops"])
 app.include_router(analyze_router, prefix="/api", tags=["ops"])
-app.include_router(GraphQLRouter(schema, multipart_uploads_enabled=True), prefix="/graphql")
+app.include_router(
+    GraphQLRouter(
+        schema,
+        multipart_uploads_enabled=True,
+        subscription_protocols=[GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL],
+    ),
+    prefix="/graphql",
+)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["system"])

@@ -14,6 +14,7 @@ uvicorn app.main:app --reload --reload-dir apps/crowd-api/app --host 127.0.0.1 -
 OpenAPI: http://127.0.0.1:8001/openapi.json  
 GraphQL: http://127.0.0.1:8001/graphql  
 
+Replay: GraphQL subscription `demoPlayback` over WebSocket (`graphql-transport-ws`).  
 Camera frames: GraphQL `analyzeCamera` (`Upload` scalar, multipart). REST `POST /api/analyze` remains for OpenAPI clients.
 
 ## Hugging Face

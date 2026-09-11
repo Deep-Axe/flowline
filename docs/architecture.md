@@ -5,6 +5,7 @@ FLOWLINE is a monorepo with two deployable products and shared contracts.
 ```text
 ops-console (Angular + Apollo)
         |  GraphQL  /graphql   venue, modelStatus, demoTick, resetDemo, analyzeCamera
+        |  GraphQL WS          demoPlayback live ticks
         v
 crowd-api (FastAPI + Strawberry)
         ├─ CSRNet (HF) / heuristic
@@ -37,7 +38,7 @@ The Angular app generates `src/generated/graphql.ts` from `schema.graphql` plus 
 
 ## Data flow
 
-1. **Replay** — GraphQL `demoTick(t)` over scripted densities
+1. **Replay** — GraphQL subscription `demoPlayback` streams timeline snapshots; `demoTick(t)` is the seek/boot query
 2. **Upload** — GraphQL multipart `analyzeCamera` → CSRNet → `Snapshot`
 3. **Fallback** — heuristic density if HF weights unavailable
 
